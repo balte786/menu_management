@@ -42,7 +42,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('restaurants_add_new_shift/{restaurant}', 'RestorantController@addnewshift')->name('restaurant.addshift');
 
         Route::get('restaurants/loginas/{restaurant}', 'RestorantController@loginas')->name('restaurants.loginas');
-        
+
+
 
         Route::get('removedemodata', 'RestorantController@removedemo')->name('restaurants.removedemo');
         Route::get('sitemap','SettingsController@regenerateSitemap')->name('regenerate.sitemap');
@@ -241,6 +242,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/share/menu', 'RestorantController@shareMenu')->name('share.menu');
     Route::get('/downloadqr', 'RestorantController@downloadQR')->name('download.menu');
 });
+// staff routes
+
+Route::get('/staff', 'staffController@index');
+Route::get('/addStaff', [App\Http\Controllers\staffController::class, 'create']);
+Route::post('/storeStaff', [App\Http\Controllers\staffController::class, 'store']);
+Route::get('/delete-staff/{id}', [App\Http\Controllers\staffController::class, 'delete_staff']);
+Route::get('/edit-staff/{id}', [App\Http\Controllers\staffController::class, 'edit_staff']);
+Route::post('/change', [App\Http\Controllers\staffController::class, 'change']);
 
 if (config('app.isqrsaas')) {
     Route::get('/cart-checkout', 'CartController@cart')->name('cart.checkout');
