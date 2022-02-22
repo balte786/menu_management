@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 use App\SmsVerification;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
