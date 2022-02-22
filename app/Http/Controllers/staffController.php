@@ -78,25 +78,24 @@ class staffController extends Controller
 
     public function edit_staff($id)
     {
-
-        $user_data = DB::table('users')->where('id',$id)->first();
-        return view('staff.edit', ['user_data' => $user_data]);
+        if (auth()->user()->hasRole('owner')) {
+            $user_data = User::find($id);
+            return view('staff.edit', ['user_data' => $user_data]);
+        }
     }
 
     public function change(Request $request)
     {
-        $staff = User::findOrFail($request->id);
+        if (auth()->user()->hasRole('owner')) {
+            $staff = User::find($request->id);
 
-        //print_r($staff);
-        //exit;
+            $staff->name = strip_tags($request->name_staff);
+            $staff->api_token = Str::random(80);
+            $staff->password = Hash::make($request->password_staff);
+            $staff->restaurant_id = Auth::user()->restaurant->id;
+            $staff->save();
 
-        $staff->name = strip_tags($request->name_staff);
-        //$staff->email = strip_tags($request->email_staff);
-        $staff->api_token = Str::random(80);
-        $staff->password = Hash::make($request->password_staff);
-        $staff->restaurant_id = Auth::user()->restaurant->id;
-        $staff->save();
-
-        return redirect('/staff')->with('status', 'You have successfully updated a staff');
+            return redirect('/staff')->with('status', 'You have successfully updated a staff');
+        }
     }
 }
