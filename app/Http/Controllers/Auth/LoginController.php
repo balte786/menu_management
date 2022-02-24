@@ -114,4 +114,11 @@ class LoginController extends Controller
 
         return redirect('/');
     }
+    protected function authenticated(Request $request, $user)
+    {
+        if(auth()->user()->hasRole('staff')){
+            return redirect('/items');
+        }
+    }
+
 }

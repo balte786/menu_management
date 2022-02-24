@@ -251,6 +251,15 @@ Route::get('/delete-staff/{id}', [App\Http\Controllers\staffController::class, '
 Route::get('/edit-staff/{id}', [App\Http\Controllers\staffController::class, 'edit_staff']);
 Route::post('/change', [App\Http\Controllers\staffController::class, 'change']);
 
+
+//admin staff routes
+Route::get('/admin-staff/{id}', 'adminstaffController@index');
+Route::get('/add-admin-staff/{id}', [App\Http\Controllers\adminstaffController::class, 'create']);
+Route::post('/store-admin-staff/{id}', [App\Http\Controllers\adminstaffController::class, 'storeStaff']);
+Route::get('/delete-admin-staff/{id}/{res_id}', [App\Http\Controllers\adminstaffController::class, 'delete_staff']);
+Route::get('/edit-admin-staff/{id}', [App\Http\Controllers\adminstaffController::class, 'edit_adm_staff']);
+Route::post('/change-admin-staff{id}', [App\Http\Controllers\adminstaffController::class, 'change_admin']);
+
 if (config('app.isqrsaas')) {
     Route::get('/cart-checkout', 'CartController@cart')->name('cart.checkout');
     Route::get('/guest-orders', 'OrderController@guestOrders')->name('guest.orders');

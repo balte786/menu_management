@@ -78,6 +78,7 @@
                                                         @endif
                                                     </form>
                                                     <a class="dropdown-item warning red" onclick="return confirm('Are you sure you want to delete this Restaurant from Database? This will aslo delete all data related to it. This is irreversible step.')"  href="{{ route('admin.restaurant.remove',$restorant)}}">{{ __('Delete') }}</a>
+                                                    <a class="dropdown-item warning red" onclick="return" href="{{URL::to('/admin-staff/'.$restorant->id)}}">{{ __('Staff') }}</a>
                                                 </div>
                                             </div>
                                         </td>
