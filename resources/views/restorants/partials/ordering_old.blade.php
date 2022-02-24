@@ -1,4 +1,4 @@
-<!--@if(config('app.ordering'))
+@if(config('app.ordering'))
     <h6 class="heading-small text-muted mb-4">{{ __('Orders') }}</h6>
 
 
@@ -10,4 +10,4 @@
 
 
     
-            @endif-->
+            @endif

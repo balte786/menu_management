@@ -31,7 +31,7 @@ class ItemsController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->hasRole('owner')) {
+        if (auth()->user()->hasRole('owner') || auth()->user()->hasRole('staff')) {
 
             
             $canAdd = auth()->user()->restorant->getPlanAttribute()['canAddNewItems'];
