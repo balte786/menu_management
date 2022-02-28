@@ -116,8 +116,11 @@ class LoginController extends Controller
     }
     protected function authenticated(Request $request, $user)
     {
-        if(auth()->user()->hasRole('staff')){
+        if (auth()->user()->hasRole('staff') || auth()->user()->hasRole('owner')) {
             return redirect('/items');
+        }
+        if (auth()->user()->hasRole('admin')) {
+            return redirect('/restaurants');
         }
     }
 

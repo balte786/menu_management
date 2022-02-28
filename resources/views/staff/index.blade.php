@@ -54,8 +54,8 @@
                             <tr>
                                 <td><a href=" #">{{ $staff->name }}</a></td>
                                 <td>{{ $staff->email }}</td>
-                                <td>{{ $staff->created_at }}</td>
-                                <td>{{ $staff->	updated_at }}</td>
+                                <td>{{ $staff->created_at->format('m/d/y h:m:A') }}</td>
+                                <td>{{ $staff->	updated_at->format('m/d/y h:m:A') }}</td>
                                 <td><a href="{{URL::to('/delete-staff/'.$staff->id)}}"><button type="button" class="btn btn-danger btn-sm">Delete</button></a></td>
                                 <td><a href="{{URL::to('/edit-staff/'.$staff->id)}}"><button type="button" class="btn btn-danger btn-sm">Edit</button></a></td>
 
