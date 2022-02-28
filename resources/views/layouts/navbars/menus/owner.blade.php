@@ -1,10 +1,12 @@
 <ul class="navbar-nav">
     @if(config('app.ordering'))
+    <!--
     <li class="nav-item">
         <a class="nav-link" href="{{ route('home') }}">
             <i class="ni ni-tv-2 text-primary"></i> {{ __('Dashboard') }}
         </a>
     </li>
+
 
     {{--<li class="nav-item">
             <a class="nav-link" href="/live">
@@ -20,6 +22,7 @@
     </a>
     </li>--}}
     @endif
+    -->
 
     <li class="nav-item">
         <a class="nav-link" href="{{ route('admin.restaurants.edit',  auth()->user()->restorant->id) }}">
@@ -28,12 +31,17 @@
     </li>
     <li class="nav-item">
         <a class="nav-link" href="{{ route('items.index') }}">
-            <i class="ni ni-collection text-pink"></i> {{ __('Menu') }}
+            <i class="ni ni-collection text-pink"></i> {{ __('Build Menu') }}
         </a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="/staff">
             <i class="ni ni-collection text-pink"></i> {{ __('Staff') }}
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('vendor',  auth()->user()->restorant->subdomain) }}">
+            <i class="ni ni-collection text-pink"></i> {{ __('Menu Preview') }}
         </a>
     </li>
     <!--

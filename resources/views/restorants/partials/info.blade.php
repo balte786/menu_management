@@ -19,6 +19,7 @@
 
                 @if(auth()->user()->hasRole('admin'))
                 <br />
+                <!--
                 <div class="row">
                     <div class="col-6 form-group{{ $errors->has('fee') ? ' has-danger' : '' }}">
                         <label class="form-control-label" for="input-description">{{ __('Fee percent') }}</label>
@@ -39,6 +40,7 @@
                         @endif
                     </div>
                 </div>
+                -->
                 <br />
                 <div class="form-group">
                     <label class="form-control-label" for="item_price">{{ __('Is Featured') }}</label>
