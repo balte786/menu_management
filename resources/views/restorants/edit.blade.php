@@ -20,11 +20,12 @@
                 <!--<li class="nav-item">
                     <a class="nav-link mb-sm-3 mb-md-0" id="tabs-menagment-main" data-toggle="tab" href="#hours" role="tab" aria-controls="tabs-menagment" aria-selected="true"><i class="ni ni-time-alarm mr-2"></i>{{ __('Working Hours')}}</a>
                 </li>
-                -->
+                
 
                 <li class="nav-item">
                     <a class="nav-link mb-sm-3 mb-md-0 " id="tabs-menagment-main" data-toggle="tab" href="#location" role="tab" aria-controls="tabs-menagment" aria-selected="true"><i class="ni ni-square-pin mr-2"></i>{{ __('Location')}}</a>
                 </li>
+                -->
                 <!--
                 @if(auth()->user()->hasRole('admin'))
                 <li class="nav-item">
