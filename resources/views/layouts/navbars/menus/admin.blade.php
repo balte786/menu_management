@@ -53,7 +53,7 @@
     -->
     <li class="nav-item">
         <a class="nav-link" href="/template">
-            <i class="ni ni-settings text-black"></i> {{ __('Templates') }}
+            <i class="fa fa-file-picture-o text-black"></i> {{ __('Templates') }}
         </a>
     </li>
     @if(config('app.isft'))

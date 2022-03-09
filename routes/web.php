@@ -34,6 +34,16 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/user/push', 'UserController@checkPushNotificationId');
 
     Route::name('admin.')->group(function () {
+
+        Route::get('/template', [App\Http\Controllers\templateController::class, 'index']);
+        Route::get('/add-template', [App\Http\Controllers\templateController::class, 'create']);
+        Route::post('/store-template', [App\Http\Controllers\templateController::class, 'store']);
+        Route::get('/delete-template/{id}', [App\Http\Controllers\templateController::class, 'delete_template']);
+        Route::get('/edit-template/{id}', [App\Http\Controllers\templateController::class, 'edit_template']);
+        Route::post('/change-template/{id}', [App\Http\Controllers\templateController::class, 'update']);
+        //Route::get('/view-template', [App\Http\Controllers\templateController::class, 'view']);
+
+
         Route::get('syncV1UsersToAuth0', 'SettingsController@syncV1UsersToAuth0')->name('syncV1UsersToAuth0');
         Route::get('dontsyncV1UsersToAuth0', 'SettingsController@dontsyncV1UsersToAuth0')->name('dontsyncV1UsersToAuth0');
         Route::resource('restaurants', 'RestorantController');
