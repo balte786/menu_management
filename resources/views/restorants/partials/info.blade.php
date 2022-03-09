@@ -10,6 +10,7 @@
                 ['ftype'=>'input','name'=>"Restaurant description",'id'=>"description",'placeholder'=>"Restaurant description",'required'=>true,'value'=>$restorant->description],
                 ['ftype'=>'input','name'=>"Restaurant address",'id'=>"address",'placeholder'=>"Restaurant address",'required'=>true,'value'=>$restorant->address],
                 ['ftype'=>'input','name'=>"Restaurant phone",'id'=>"phone",'placeholder'=>"Restaurant phone",'required'=>true,'value'=>$restorant->phone],
+
                 ]])
                 @if(config('settings.multi_city'))
                 @include('partials.fields',['fields'=>[
@@ -42,6 +43,18 @@
                 </div>
                 -->
                 <br />
+                <div class="form-group">
+                    <label class="form-control-label" for="item_price">Set Template</label>
+                    <select class="form-control" name="template_id">
+                        @foreach($templates as $template)
+                        <option <?php if ($restorant->template_id == $template->id) {
+                                    echo "selected";
+                                } ?> value="{{$template->id}}" name="template_id">{{$template->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+
                 <div class="form-group">
                     <label class="form-control-label" for="item_price">{{ __('Is Featured') }}</label>
                     <label class="custom-toggle" style="float: right">

@@ -11,6 +11,7 @@ use App\Imports\RestoImport;
 use App\Items;
 use App\Models\LocalMenu;
 use App\Models\Options;
+use App\Models\Template;
 use App\Notifications\RestaurantCreated;
 use App\Notifications\WelcomeNotification;
 use App\Plans;
@@ -219,105 +220,113 @@ class RestorantController extends Controller
         //Generate days columns
         $hoursRange = ['id'];
         for ($i = 0; $i < 7; $i++) {
-            $from = $i.'_from';
-            $to = $i.'_to';
+            $from = $i . '_from';
+            $to = $i . '_to';
 
             array_push($hoursRange, $from);
             array_push($hoursRange, $to);
         }
 
-        
 
-        
+
+
 
         //Languages
-        $available_languages=[];
-        $default_language=null;
+        $available_languages = [];
+        $default_language = null;
 
         try {
-            if($restaurant->localMenus()->get()){
-                $available_languages=$restaurant->localMenus()->get()->pluck('languageName','id');
+            if ($restaurant->localMenus()->get()) {
+                $available_languages = $restaurant->localMenus()->get()->pluck('languageName', 'id');
                 foreach ($restaurant->localMenus()->get() as $key => $localMenu) {
-                    if($localMenu->default.""=="1"){
-                        $default_language= $localMenu->id;
+                    if ($localMenu->default . "" == "1") {
+                        $default_language = $localMenu->id;
                     }
                 }
             }
         } catch (\Throwable $th) {
         }
-        
-        
+
+
 
         //currency
-        if(strlen($restaurant->currency)>1){
-            $currency= $restaurant->currency;
-        }else{
-            $currency=config('settings.cashier_currency');
+        if (strlen($restaurant->currency) > 1) {
+            $currency = $restaurant->currency;
+        } else {
+            $currency = config('settings.cashier_currency');
         }
 
         //App fields
-        $rawFields=$this->vendorFields($restaurant->getAllConfigs());
+        $rawFields = $this->vendorFields($restaurant->getAllConfigs());
         //Stripe fields
-        if(config('settings.stripe_useVendor')){
-            array_push($rawFields,[
-                "separator"=>"Stripe configuration",
-                "title"=> "Enable Stripe for payments when ordering",
-                "key"=> "stripe_enable",
-                "ftype"=> "bool",
-                "value"=>$restaurant->getConfig('stripe_enable',"false"),
-                "onlyin"=>"qrsaas"
-            ],[
-                "title"=>"Stripe key", 
-                "key"=>"stripe_key", 
-                "value"=>$restaurant->getConfig('stripe_key',""),
-                "onlyin"=>"qrsaas"
-            ],
-            [
-                "title"=>"Stripe secret", 
-                "key"=>"stripe_secret", 
-                "value"=>$restaurant->getConfig('stripe_secret',""),
-                "onlyin"=>"qrsaas"
-            ]);
+        if (config('settings.stripe_useVendor')) {
+            array_push(
+                $rawFields,
+                [
+                    "separator" => "Stripe configuration",
+                    "title" => "Enable Stripe for payments when ordering",
+                    "key" => "stripe_enable",
+                    "ftype" => "bool",
+                    "value" => $restaurant->getConfig('stripe_enable', "false"),
+                    "onlyin" => "qrsaas"
+                ],
+                [
+                    "title" => "Stripe key",
+                    "key" => "stripe_key",
+                    "value" => $restaurant->getConfig('stripe_key', ""),
+                    "onlyin" => "qrsaas"
+                ],
+                [
+                    "title" => "Stripe secret",
+                    "key" => "stripe_secret",
+                    "value" => $restaurant->getConfig('stripe_secret', ""),
+                    "onlyin" => "qrsaas"
+                ]
+            );
         }
-  
-       
-        $appFields=$this->convertJSONToFields($rawFields);
+
+
+        $appFields = $this->convertJSONToFields($rawFields);
+
+        $templates  =   Template::get()->all();
 
         $shiftsData = Hours::where(['restorant_id' => $restaurant->id])->get($hoursRange);
-        $shifts=[];
+        $shifts = [];
         foreach ($shiftsData as $key => $hours) {
-            $shiftId=$hours->id;
-            $workingHours=$hours->toArray();
+            $shiftId = $hours->id;
+            $workingHours = $hours->toArray();
             unset($workingHours['id']);
-            $shifts[$shiftId]=$workingHours;
+            $shifts[$shiftId] = $workingHours;
         }
 
         if (auth()->user()->id == $restaurant->user_id || auth()->user()->hasRole('admin')) {
-            $cities=[];
+            $cities = [];
             try {
-                $cities=City::get()->pluck('name', 'id');
+                $cities = City::get()->pluck('name', 'id');
             } catch (\Throwable $th) {
             }
             return view('restorants.edit', [
-                'hasCloner'=>Module::has('cloner')&& auth()->user()->hasRole('admin'),
+                'hasCloner' => Module::has('cloner') && auth()->user()->hasRole('admin'),
                 'restorant' => $restaurant,
-                'shifts'=>$shifts,
-                'days'=>$days,
-                'cities'=> $cities,
-                'plans'=>Plans::get()->pluck('name', 'id'),
-                'available_languages'=> $available_languages,
-                'default_language'=>$default_language,
-                'currency'=>$currency,
-                'appFields'=>$appFields
-                ]);
+                'shifts' => $shifts,
+                'templates' => $templates,
+                'days' => $days,
+                'cities' => $cities,
+                'plans' => Plans::get()->pluck('name', 'id'),
+                'available_languages' => $available_languages,
+                'default_language' => $default_language,
+                'currency' => $currency,
+                'appFields' => $appFields
+            ]);
         }
 
         return redirect()->route('home')->withStatus(__('No Access'));
     }
 
-    public function updateApps(Request $request, Restorant $restaurant){
-         //Update custom fields
-         if($request->has('custom')){
+    public function updateApps(Request $request, Restorant $restaurant)
+    {
+        //Update custom fields
+        if ($request->has('custom')) {
             $restaurant->setMultipleConfig($request->custom);
         }
         return redirect()->route('admin.restaurants.edit', ['restaurant' => $restaurant->id])->withStatus(__('Restaurant successfully updated.'));
@@ -335,50 +344,52 @@ class RestorantController extends Controller
         $restaurant->name = strip_tags($request->name);
         $restaurant->address = strip_tags($request->address);
         $restaurant->phone = strip_tags($request->phone);
-        
+
+
+
         $restaurant->description = strip_tags($request->description);
         $restaurant->minimum = strip_tags($request->minimum);
 
-        if($request->has('fee')){
+        if ($request->has('fee')) {
             $restaurant->fee = $request->fee;
             $restaurant->static_fee = $request->static_fee;
         }
-    
+
         //Update subdomain only if rest is not older than 1 day
-        if(Carbon::parse($restaurant->created_at)->diffInDays(Carbon::now())<2){
+        if (Carbon::parse($restaurant->created_at)->diffInDays(Carbon::now()) < 2) {
             $restaurant->subdomain = $this->makeAlias(strip_tags($request->name));
         }
 
-        if(auth()->user()->hasRole('admin')){
+        if (auth()->user()->hasRole('admin')) {
             $restaurant->is_featured = $request->is_featured != null ? 1 : 0;
         }
 
-        
+
         $restaurant->can_pickup = $request->can_pickup == 'true' ? 1 : 0;
         $restaurant->can_deliver = $request->can_deliver == 'true' ? 1 : 0;
-        if($request->has('self_deliver')){
+        if ($request->has('self_deliver')) {
             $restaurant->self_deliver = $request->self_deliver == 'true' ? 1 : 0;
         }
         $restaurant->free_deliver = $request->free_deliver == 'true' ? 1 : 0;
 
-        if($request->has('disable_callwaiter')){
-            $restaurant->setConfig('disable_callwaiter',$request->disable_callwaiter == 'true' ? 1 : 0);
+        if ($request->has('disable_callwaiter')) {
+            $restaurant->setConfig('disable_callwaiter', $request->disable_callwaiter == 'true' ? 1 : 0);
         }
 
-        if($request->has('disable_ordering')){
-            $restaurant->setConfig('disable_ordering',$request->disable_ordering == 'true' ? 1 : 0);
+        if ($request->has('disable_ordering')) {
+            $restaurant->setConfig('disable_ordering', $request->disable_ordering == 'true' ? 1 : 0);
         }
 
-        if($request->has('disable_continues_ordering')){
-            $restaurant->setConfig('disable_continues_ordering',$request->disable_continues_ordering == 'true' ? 1 : 0);
+        if ($request->has('disable_continues_ordering')) {
+            $restaurant->setConfig('disable_continues_ordering', $request->disable_continues_ordering == 'true' ? 1 : 0);
         }
 
 
-        if($request->has('payment_info')){
+        if ($request->has('payment_info')) {
             $restaurant->payment_info = $request->payment_info;
         }
 
-        if($request->has('whatsapp_phone')){
+        if ($request->has('whatsapp_phone')) {
             $restaurant->whatsapp_phone = $request->whatsapp_phone;
         }
 
@@ -391,68 +402,69 @@ class RestorantController extends Controller
                 $this->imagePath,
                 $request->resto_logo,
                 [
-                    ['name'=>'large', 'w'=>590, 'h'=>400],
-                    ['name'=>'medium', 'w'=>295, 'h'=>200],
-                    ['name'=>'thumbnail', 'w'=>200, 'h'=>200],
+                    ['name' => 'large', 'w' => 590, 'h' => 400],
+                    ['name' => 'medium', 'w' => 295, 'h' => 200],
+                    ['name' => 'thumbnail', 'w' => 200, 'h' => 200],
                 ]
             );
         }
 
         if ($request->hasFile('resto_wide_logo')) {
-       
+
             $uuid = Str::uuid()->toString();
-            $request->resto_wide_logo->move(public_path($this->imagePath), $uuid.'_original.'.'png');
-            $restaurant->setConfig('resto_wide_logo',$uuid);
+            $request->resto_wide_logo->move(public_path($this->imagePath), $uuid . '_original.' . 'png');
+            $restaurant->setConfig('resto_wide_logo', $uuid);
         }
 
         if ($request->hasFile('resto_wide_logo_dark')) {
-       
+
             $uuid = Str::uuid()->toString();
-            $request->resto_wide_logo_dark->move(public_path($this->imagePath), $uuid.'_original.'.'png');
-            $restaurant->setConfig('resto_wide_logo_dark',$uuid);
+            $request->resto_wide_logo_dark->move(public_path($this->imagePath), $uuid . '_original.' . 'png');
+            $restaurant->setConfig('resto_wide_logo_dark', $uuid);
         }
 
-        
+
         if ($request->hasFile('resto_cover')) {
             $restaurant->cover = $this->saveImageVersions(
                 $this->imagePath,
                 $request->resto_cover,
                 [
-                    ['name'=>'cover', 'w'=>2000, 'h'=>1000],
-                    ['name'=>'thumbnail', 'w'=>400, 'h'=>200],
+                    ['name' => 'cover', 'w' => 2000, 'h' => 1000],
+                    ['name' => 'thumbnail', 'w' => 400, 'h' => 200],
                 ]
             );
         }
 
         //Change default language
         //If language is different than the current one
-        if($request->default_language){
-            $currentDefault=$restaurant->localMenus()->where('default',1)->first();
-            if($currentDefault!=null&&$currentDefault->id!=$request->default_language){
+        if ($request->default_language) {
+            $currentDefault = $restaurant->localMenus()->where('default', 1)->first();
+            if ($currentDefault != null && $currentDefault->id != $request->default_language) {
                 //Remove Default from the old default, or curernt default
-                $currentDefault->default=0;
+                $currentDefault->default = 0;
                 $currentDefault->update();
             }
 
             //Make the new language default
-            $newDefault=$restaurant->localMenus()->findOrFail($request->default_language);
-            $newDefault->default=1;
+            $newDefault = $restaurant->localMenus()->findOrFail($request->default_language);
+            $newDefault->default = 1;
             $newDefault->update();
         }
-        
+
 
         //Change currency
-        $restaurant->currency=$request->currency;
+        $restaurant->currency = $request->currency;
 
         //Change do converstion
-        $restaurant->do_covertion=$request->do_covertion=="true"?1:0;
+        $restaurant->do_covertion = $request->do_covertion == "true" ? 1 : 0;
+        $restaurant->template_id = $request->template_id;
 
 
         $restaurant->update();
 
 
         //Update custom fields
-        if($request->has('custom')){
+        if ($request->has('custom')) {
             $restaurant->setMultipleConfig($request->custom);
         }
 
