@@ -19,7 +19,8 @@ class ItemsController extends Controller
 {
     private $imagePath = 'uploads/restorants/';
 
-    public function reorderCategories(Categories $up){
+    public function reorderCategories(Categories $up)
+    {
         $up->moveOrderUp();
         return redirect()->route('items.index')->withStatus(__('Sort order updated'));
     }
@@ -31,79 +32,82 @@ class ItemsController extends Controller
      */
     public function index()
     {
-        if (auth()->user()->hasRole('owner') || auth()->user()->hasRole('staff')) {
+        //if (auth()->user()->hasRole('owner')) {
 
-            
-            $canAdd = auth()->user()->restorant->getPlanAttribute()['canAddNewItems'];
-            
 
-            //Change language
-            ConfChanger::switchLanguage(auth()->user()->restorant);
+        $canAdd = auth()->user()->restorant->getPlanAttribute()['canAddNewItems'];
 
-            if (isset($_GET['remove_lang']) && auth()->user()->restorant->localmenus()->count() > 1) {
-                $localMenuToDelete=auth()->user()->restorant->localmenus()->where('language', $_GET['remove_lang'])->first();
-                $isMenuToDeleteIsDefault=$localMenuToDelete->default.""=="1";
-                $localMenuToDelete->delete();
-                
-                $nextLanguageModel = auth()->user()->restorant->localmenus()->first();
-                $nextLanguage = $nextLanguageModel->language;
-                app()->setLocale($nextLanguage);
-                session(['applocale_change' => $nextLanguage]);
 
-                if($isMenuToDeleteIsDefault){
-                    $nextLanguageModel->default=1;
-                    $nextLanguageModel->update();
-                }
+
+        //Change language
+        ConfChanger::switchLanguage(auth()->user()->restorant);
+
+        if (isset($_GET['remove_lang']) && auth()->user()->restorant->localmenus()->count() > 1) {
+            $localMenuToDelete = auth()->user()->restorant->localmenus()->where('language', $_GET['remove_lang'])->first();
+            $isMenuToDeleteIsDefault = $localMenuToDelete->default . "" == "1";
+            $localMenuToDelete->delete();
+
+            $nextLanguageModel = auth()->user()->restorant->localmenus()->first();
+            $nextLanguage = $nextLanguageModel->language;
+            app()->setLocale($nextLanguage);
+            session(['applocale_change' => $nextLanguage]);
+
+            if ($isMenuToDeleteIsDefault) {
+                $nextLanguageModel->default = 1;
+                $nextLanguageModel->update();
             }
-
-            if(isset($_GET['make_default_lang'])){
-                $newDefault=auth()->user()->restorant->localmenus()->where('language', $_GET['make_default_lang'])->first();
-                $oldDefault=auth()->user()->restorant->localmenus()->where('default', "1")->first();
-                
-                if($oldDefault&&$oldDefault->language!=$_GET['make_default_lang']){
-                    $oldDefault->default=0;
-                    $oldDefault->update();
-                }
-                $newDefault->default=1;
-                $newDefault->update();
-                
-                
-                
-            }
-
-            $currentEnvLanguage = isset(config('config.env')[2]['fields'][0]['data'][config('app.locale')]) ? config('config.env')[2]['fields'][0]['data'][config('app.locale')] : 'UNKNOWN';
-
-
-            //Change currency
-            ConfChanger::switchCurrency(auth()->user()->restorant);
-            $defaultLng=auth()->user()->restorant->localmenus->where('default','1')->first();
-
-            
-
-            //Since 2.1.7 - there is sorting. 
-            $categories=auth()->user()->restorant->categories;
-
-            //If first item order starts with 0
-            if($categories->first()&&$categories->first()->order_index==0){
-                Categories::setNewOrder($categories->pluck('id')->toArray());
-
-                //Re-get categories
-                $categories=auth()->user()->restorant->categories;
-            }
-
-            return view('items.index', [
-                'hasMenuPDf'=>Module::has('menupdf'),
-                'canAdd'=>$canAdd,
-                'categories' => $categories,
-                'restorant_id' => auth()->user()->restorant->id,
-                'currentLanguage'=> $currentEnvLanguage,
-                'availableLanguages'=>auth()->user()->restorant->localmenus,
-                'defaultLanguage'=>$defaultLng?$defaultLng->language:""
-                ]);
-        } else {
-            return redirect()->route('orders.index')->withStatus(__('No Access'));
         }
+
+        if (isset($_GET['make_default_lang'])) {
+            $newDefault = auth()->user()->restorant->localmenus()->where('language', $_GET['make_default_lang'])->first();
+            $oldDefault = auth()->user()->restorant->localmenus()->where('default', "1")->first();
+
+            if ($oldDefault && $oldDefault->language != $_GET['make_default_lang']) {
+                $oldDefault->default = 0;
+                $oldDefault->update();
+            }
+            $newDefault->default = 1;
+            $newDefault->update();
+        }
+
+        $currentEnvLanguage = isset(config('config.env')[2]['fields'][0]['data'][config('app.locale')]) ? config('config.env')[2]['fields'][0]['data'][config('app.locale')] : 'UNKNOWN';
+
+
+        //Change currency
+        ConfChanger::switchCurrency(auth()->user()->restorant);
+        $defaultLng = auth()->user()->restorant->localmenus->where('default', '1')->first();
+
+
+
+        //Since 2.1.7 - there is sorting. 
+        $categories = auth()->user()->restorant->categories;
+        //$categoires =  Categories::where('restorant_id', 21)->get();
+
+        //If first item order starts with 0
+        if ($categories->first() && $categories->first()->order_index == 0) {
+            Categories::setNewOrder($categories->pluck('id')->toArray());
+
+            //Re-get categories
+            $categories = auth()->user()->restorant->categories;
+        }
+
+        return view('items.index', [
+            'hasMenuPDf' => Module::has('menupdf'),
+            'canAdd' => $canAdd,
+            'categories' => $categories,
+            'restorant_id' => auth()->user()->restorant->id,
+            'currentLanguage' => $currentEnvLanguage,
+            'availableLanguages' => auth()->user()->restorant->localmenus,
+            'defaultLanguage' => $defaultLng ? $defaultLng->language : ""
+        ]);
+        //} else {
+        return redirect()->route('orders.index')->withStatus(__('No Access'));
+        //}
     }
+
+
+
+
 
     public function indexAdmin(Restorant $restorant)
     {
@@ -137,22 +141,22 @@ class ItemsController extends Controller
         $item->description = strip_tags($request->item_description);
         $item->price = strip_tags($request->item_price);
         $item->category_id = strip_tags($request->category_id);
-        $defVat=0;
-        $resto=$this->getRestaurant();
-        if($resto){
-            $defVat=$resto->getConfig('default_tax_value',0);
+        $defVat = 0;
+        $resto = $this->getRestaurant();
+        if ($resto) {
+            $defVat = $resto->getConfig('default_tax_value', 0);
         }
-        $item->vat=$defVat;
-        
+        $item->vat = $defVat;
+
         if ($request->hasFile('item_image')) {
             $item->image = $this->saveImageVersions(
                 $this->imagePath,
                 $request->item_image,
                 [
-                    ['name'=>'large', 'w'=>590, 'h'=>400],
+                    ['name' => 'large', 'w' => 590, 'h' => 400],
                     //['name'=>'thumbnail','w'=>300,'h'=>300],
-                    ['name'=>'medium', 'w'=>295, 'h'=>200],
-                    ['name'=>'thumbnail', 'w'=>200, 'h'=>200],
+                    ['name' => 'medium', 'w' => 295, 'h' => 200],
+                    ['name' => 'thumbnail', 'w' => 200, 'h' => 200],
                 ]
             );
         }
@@ -182,28 +186,31 @@ class ItemsController extends Controller
     {
         //if item belongs to owner restorant menu return view
         if (auth()->user()->hasRole('owner') && $item->category->restorant->id == auth()->user()->restorant->id || auth()->user()->hasRole('admin')) {
-            
-            $extraViews=[];
+
+            $extraViews = [];
             foreach (Module::all() as $key => $module) {
-                if(is_array($module->get('menuview'))){
+                if (is_array($module->get('menuview'))) {
                     foreach ($module->get('menuview') as $key => $menu) {
-                       array_push($extraViews,$menu);
+                        array_push($extraViews, $menu);
                     }
                 }
             }
 
-            
-            
-            
-            return view('items.edit',
-            [
-                'extraViews'=>$extraViews,
-                'allergens'=>Allergens::where('post_type','allergen')->get(),
-                'item' => $item,
-                'setup'=>['items'=>$item->uservariants()->paginate(1000)],
-                'restorant' => $item->category->restorant,
-                'categories'=> $item->category->restorant->categories->pluck('name','id'),
-                'restorant_id' => $item->category->restorant->id, ]);
+
+
+
+            return view(
+                'items.edit',
+                [
+                    'extraViews' => $extraViews,
+                    'allergens' => Allergens::where('post_type', 'allergen')->get(),
+                    'item' => $item,
+                    'setup' => ['items' => $item->uservariants()->paginate(1000)],
+                    'restorant' => $item->category->restorant,
+                    'categories' => $item->category->restorant->categories->pluck('name', 'id'),
+                    'restorant_id' => $item->category->restorant->id,
+                ]
+            );
         } else {
             return redirect()->route('items.index')->withStatus(__('No Access'));
         }
@@ -218,12 +225,12 @@ class ItemsController extends Controller
      */
     public function update(Request $request, Items $item)
     {
-        $makeVariantsRecreate=false;
+        $makeVariantsRecreate = false;
         $item->name = strip_tags($request->item_name);
         $item->description = strip_tags($request->item_description);
         $item->category_id = $request->category_id;
-        if($item->price!=strip_tags($request->item_price)){
-            $makeVariantsRecreate=true;
+        if ($item->price != strip_tags($request->item_price)) {
+            $makeVariantsRecreate = true;
         }
         $item->price = strip_tags($request->item_price);
         if (isset($request->vat)) {
@@ -231,38 +238,37 @@ class ItemsController extends Controller
         }
 
 
-        $item->available = $request->exists('itemAvailable');
+        $item->available = $request->itemAvailable;
         $item->has_variants = $request->exists('has_variants');
-        if(!$item->has_variants){
-            $item->enable_system_variants=0;
+        if (!$item->has_variants) {
+            $item->enable_system_variants = 0;
 
             //Delete all system variants
             $item->systemvariants()->delete();
-        }else{
+        } else {
 
             //We have variants, but do we have system variables
-            $doWoHave_enable_system_variants=$request->exists('enable_system_variants')?1:0;
+            $doWoHave_enable_system_variants = $request->exists('enable_system_variants') ? 1 : 0;
 
             //In case value changes from no to yes, we need to recreate
-            if($item->enable_system_variants==0&&$doWoHave_enable_system_variants==1){
-                $makeVariantsRecreate=true;
+            if ($item->enable_system_variants == 0 && $doWoHave_enable_system_variants == 1) {
+                $makeVariantsRecreate = true;
             }
 
             //Set the flag for the system
-            $item->enable_system_variants=$doWoHave_enable_system_variants; 
+            $item->enable_system_variants = $doWoHave_enable_system_variants;
 
             //When we have System Variables
-            if($item->enable_system_variants==1){
+            if ($item->enable_system_variants == 1) {
                 //And we do need to make recreation
-                if($makeVariantsRecreate){
+                if ($makeVariantsRecreate) {
                     //Delete all of them - since this can be a price change
                     $item->systemvariants()->forceDelete();
 
                     //And recreate once  again - with new item price
                     $item->makeAllMissingVariants($item->price);
                 }
-                
-            }else{
+            } else {
                 //Delete all system variants - we don't need system variables
                 $item->systemvariants()->forceDelete();
             }
@@ -274,10 +280,10 @@ class ItemsController extends Controller
                     $this->imagePath,
                     $request->item_image,
                     [
-                        ['name'=>'large'],
+                        ['name' => 'large'],
                         //['name'=>'thumbnail','w'=>300,'h'=>300],
-                        ['name'=>'medium', 'w'=>295, 'h'=>200],
-                        ['name'=>'thumbnail', 'w'=>200, 'h'=>200],
+                        ['name' => 'medium', 'w' => 295, 'h' => 200],
+                        ['name' => 'thumbnail', 'w' => 200, 'h' => 200],
                     ]
                 );
             }
@@ -328,7 +334,7 @@ class ItemsController extends Controller
     public function storeExtras(Request $request, Items $item)
     {
         //dd($request->all());
-        if ($request->extras_id.'' == '') {
+        if ($request->extras_id . '' == '') {
             //New
             $extras = new Extras;
             $extras->name = strip_tags($request->extras_name);
@@ -338,7 +344,7 @@ class ItemsController extends Controller
             $extras->save();
         } else {
             //Update
-            $extras = Extras::where(['id'=>$request->extras_id])->get()->first();
+            $extras = Extras::where(['id' => $request->extras_id])->get()->first();
 
             $extras->name = strip_tags($request->extras_name);
             $extras->price = strip_tags($request->extras_price);
@@ -348,7 +354,7 @@ class ItemsController extends Controller
 
         //For variants
         //Does the item of this extra have item?
-        if ($item->has_variants.'' == 1) {
+        if ($item->has_variants . '' == 1) {
             //In cas we have variants, we  need to check if this variant is for all variants, or only for selected one
             if ($request->exists('variantsSelector')) {
                 $extras->extra_for_all_variants = 0;
@@ -367,7 +373,7 @@ class ItemsController extends Controller
 
     public function editExtras(Request $request, Items $item)
     {
-        $extras = Extras::where(['id'=>$request->extras_id])->get()->first();
+        $extras = Extras::where(['id' => $request->extras_id])->get()->first();
 
         $extras->name = strip_tags($request->extras_name_edit);
         $extras->price = strip_tags($request->extras_price_edit);
