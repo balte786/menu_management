@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Categories;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+use validator;
 
 class CategoriesController extends Controller
 {
@@ -38,11 +41,18 @@ class CategoriesController extends Controller
         $category = new Categories;
         $category->name = strip_tags($request->category_name);
         $category->restorant_id = $request->restaurant_id;
+        if ($request->hasFile('cat_img')) {
+            $file = $request->file('cat_img');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move('uploads/categories/', $filename);
+            $category->category_img = $filename;
+        }
         $category->save();
 
         if (auth()->user()->hasRole('admin')) {
             //Direct to that page directly
-            return redirect()->route('items.admin', ['restorant'=>$request->restaurant_id])->withStatus(__('Category successfully created.'));
+            return redirect()->route('items.admin', ['restorant' => $request->restaurant_id])->withStatus(__('Category successfully created.'));
         }
 
         return redirect()->route('items.index')->withStatus(__('Category successfully created.'));
@@ -80,6 +90,18 @@ class CategoriesController extends Controller
     public function update(Request $request, Categories $category)
     {
         $category->name = $request->category_name;
+        if ($request->hasFile('cat_img')) {
+
+            $destination = public_path("uploads/categories/" . $category->category_img);
+            if (File::exists($destination)) {
+                File::delete($destination);
+            }
+            $file = $request->file('cat_img');
+            $extension = $file->getClientOriginalName();
+            $filename = time() . '.' . $extension;
+            $file->move('uploads/categories/', $filename);
+            $category->category_img = $filename;
+        }
         $category->update();
 
         return redirect()->back()->withStatus(__('Category name successfully updated.'));
