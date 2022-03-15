@@ -826,6 +826,22 @@ class FrontEndController extends Controller
 
            $menuTemplate=config('settings.front_end_template','defaulttemplate');
            $viewFile='restorants.show';
+            $template = $restorant->template_id;
+            if ($template == 0) {
+                $viewFile = 'restorants.templates.templateOne';
+            } else if ($template == 1) {
+                $viewFile = 'restorants.templates.templateOne';
+            } else if ($template == 2) {
+                $viewFile = 'restorants.templates.templateTwo';
+            } else if ($template == 3) {
+                $viewFile = 'restorants.templates.templateThree';
+            } else if ($template == 4) {
+                $viewFile = 'restorants.templates.templateFour';
+            }else{
+                $viewFile='restorants.show';
+            }
+
+
            if($menuTemplate!='defaulttemplate'){
             $viewFile=config('settings.front_end_template','defaulttemplate')."::show";
            }
