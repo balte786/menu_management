@@ -67,6 +67,13 @@
                                 </span>
                                 @endif
                             </div>
+                            <div class="form-group">
+                                <input type="radio" id="active" name="cat_status" value="1">
+                                <label for="html">Active</label>
+                                <input type="radio" id="in_active" name="cat_status" value="0">
+                                <label for="css">In Active</label>
+
+                            </div>
                             <div class="form-group{{ $errors->has('cat_img') ? ' has-danger' : '' }}">
                                 <label class="form-control-label" for="cat_img">{{ __('Category Image') }}</label>
                                 <input type="file" name="cat_img" id="cat_img" accept="image/x-png,image/gif,image/jpeg" placeholder="{{ __('Select Category image') }} ..." value="">
@@ -76,6 +83,7 @@
                                 </span>
                                 @endif
                             </div>
+
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary my-4">{{ __('Save') }}</button>
                             </div>

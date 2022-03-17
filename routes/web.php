@@ -12,8 +12,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', 'FrontEndController@index')->name('front');
+Route::view('/', 'auth.login');
+//Route::get('/', 'FrontEndController@index')->name('front');
 Route::get('/'.config('settings.url_route').'/{alias}', 'FrontEndController@restorant')->name('vendor');
 Route::get('/city/{city}', 'FrontEndController@showStores')->name('show.stores');
 Route::get('/lang', 'FrontEndController@langswitch')->name('lang.switch');
