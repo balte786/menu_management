@@ -102,10 +102,25 @@ class CategoriesController extends Controller
             $file->move('uploads/categories/', $filename);
             $category->category_img = $filename;
         }
+        $category->active = $request->cat_status;
         $category->update();
 
-        return redirect()->back()->withStatus(__('Category name successfully updated.'));
+        return redirect()->back()->withStatus(__('Category successfully updated.'));
     }
+
+    // public function change(Categories $category, Request $request)
+    // {
+    //     $item->available = $request->value;
+    //     $item->update();
+
+    //     return response()->json([
+    //         'data' => [
+    //             'itemAvailable' => $item->available,
+    //         ],
+    //         'status' => true,
+    //         'errMsg' => '',
+    //     ]);
+    // }
 
     /**
      * Remove the specified resource from storage.

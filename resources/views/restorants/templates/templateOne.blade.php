@@ -89,9 +89,11 @@ function clean($string)
                 </li>
                 @foreach ( $restorant->categories as $key => $category)
                 @if(!$category->aitems->isEmpty())
+                @if($category->active == 1)
                 <li class="nav-item nav-item-category" id="{{ 'cat_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
                     <a class="nav-link mb-sm-3 mb-md-0" data-toggle="tab" role="tab" id="{{ 'nav_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" href="#{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">{{ $category->name }}</a>
                 </li>
+                @endif
                 @endif
                 @endforeach
             </ul>
@@ -107,6 +109,7 @@ function clean($string)
 
         @if(!$restorant->categories->isEmpty())
         @foreach ( $restorant->categories as $key => $category)
+        @if($category->active == 1)
         @if(!$category->aitems->isEmpty())
         <div id="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" class="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
             <h1>{{ $category->name }}</h1><br />
@@ -145,6 +148,7 @@ function clean($string)
             </div>
             @endforeach
         </div>
+        @endif
         @endforeach
         @else
         <div class="row">

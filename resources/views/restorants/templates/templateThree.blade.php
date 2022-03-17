@@ -165,13 +165,16 @@ function clean($string)
 </section>
 
 <section class="default-section menu-fix" id="restaurant-content">
+
     <input type="hidden" id="rid" value="{{ $restorant->id }}">
     <div class="container">
 
         <div class="menu-fix-main-list wow fadeInDown animated" data-wow-duration="1000ms" data-wow-delay="700ms" style="visibility: visible; animation-duration: 1000ms; animation-delay: 700ms; animation-name: fadeInDown;">
             @if(!$restorant->categories->isEmpty())
+
             @foreach ( $restorant->categories as $key => $category)
             @if(!$category->aitems->isEmpty())
+            @if($category->active == 1)
             <div class="menu-fix-item">
                 <img src="{{ asset('uploads/categories/' . $category->category_img) }}" class="mx-auto d-block" alt="">
             </div>
@@ -179,7 +182,7 @@ function clean($string)
                 <h2 class="text-dark" id="{{ 'nav_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">{{ $category->name }}</h2>
                 <h6>The role of a good cook ware in the preparation of a sumptuous meal cannot be over emphasized then one consider white bread</h6>
             </div>
-            @endif
+
             <div class="row">
                 @foreach ($category->aitems as $item)
                 <div class="col-md-4 col-sm-4 col-xs-12 wow fadeInDown animated" data-wow-duration="1000ms" data-wow-delay="700ms" style="visibility: visible; animation-duration: 1000ms; animation-delay: 700ms; animation-name: fadeInDown;">
@@ -238,7 +241,10 @@ function clean($string)
                 </div> -->
                 @endforeach
             </div>
+            @endif
+            @endif
             @endforeach
+
             @else
             <div class="row">
                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
@@ -250,6 +256,7 @@ function clean($string)
                 </div>
             </div>
             @endif
+
         </div>
     </div>
 </section>
