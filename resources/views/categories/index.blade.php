@@ -4,11 +4,10 @@
 @endsection
 @section('content')
 
-    <div class="header bg-gradient-primary pb-7 pt-5 pt-md-8">
+    <div class="header bg-gradient-primary pb-7 pt-5 pt-md-4">
         <div class="container-fluid">
             <div class="header-body">
-                <div class="row align-items-center py-4">
-
+                <div class="row align-items-center">
                 </div>
             </div>
         </div>
