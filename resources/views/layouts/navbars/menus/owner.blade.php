@@ -29,6 +29,11 @@
             <i class="ni ni-shop text-info"></i> {{ __('Restaurant') }}
         </a>
     </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{url('categories')}}">
+                <i class="ni ni-collection text-pink"></i>Categories
+            </a>
+        </li>
     <li class="nav-item">
         <a class="nav-link" href="{{ route('items.index') }}">
             <i class="ni ni-collection text-pink"></i> {{ __('Build Menu') }}
