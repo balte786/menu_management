@@ -17,7 +17,54 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        //
+        $categories = Categories::with('children')->whereNull('parent_id')->where('restorant_id',auth()->user()->restorant->id)->get();
+
+        return view('categories.index')->with([
+            'categories'  => $categories
+        ]);
+    }
+
+    public function store_category(Request $request){
+
+        $validatedData = $this->validate($request, [
+            'name'      => 'required|min:3|max:255|string',
+            'parent_id' => 'sometimes|nullable|numeric',
+            'restorant_id'=>'required'
+        ]);
+        $category = new Categories;
+        $category->name = strip_tags($request->name);
+        $category->restorant_id = $request->restorant_id;
+        $category->parent_id = $request->parent_id;
+        if ($request->hasFile('cat_img')) {
+            $file = $request->file('cat_img');
+            $extension = $file->getClientOriginalExtension();
+            $filename = time() . '.' . $extension;
+            $file->move('uploads/categories/', $filename);
+            $category->category_img = $filename;
+        }
+        $category->save();
+        return redirect()->route('categories.index')->withSuccess('You have successfully created a Category!');
+    }
+
+    public function update_category(Request $request, $id)
+    {
+        $category   =   Categories::find($id);
+        $category->name = $request->name;
+        if ($request->hasFile('cat_img')) {
+
+            $destination = public_path("uploads/categories/" . $category->category_img);
+            if (File::exists($destination)) {
+                File::delete($destination);
+            }
+            $file = $request->file('cat_img');
+            $extension = $file->getClientOriginalName();
+            $filename = time() . '.' . $extension;
+            $file->move('uploads/categories/', $filename);
+            $category->category_img = $filename;
+        }
+        $category->update();
+
+        return redirect()->route('categories.index')->withSuccess('You have successfully updated a Category!');
     }
 
     /**
@@ -132,5 +179,42 @@ class CategoriesController extends Controller
     {
         $category->delete();
         return redirect()->route('items.index')->withStatus(__('Category successfully deleted.'));
+    }
+
+    public function destroy_category($id){
+
+        $category   =   Categories::find($id);
+
+        if ($category->children) {
+            foreach ($category->children()->with('items')->get() as $child) {
+                foreach ($child->items as $item) {
+                    $item->update(['category_id' => NULL]);
+                }
+            }
+
+            $category->children()->forceDelete();
+        }
+
+        foreach ($category->items as $item) {
+            $item->update(['category_id' => NULL]);
+        }
+
+        $category->forceDelete();
+
+        return redirect()->route('categories.index')->withSuccess('You have successfully deleted a Category!');
+    }
+
+    public function active_category($id,$active){
+
+        if($active==1){
+            $set_active = 0;
+        }else{
+            $set_active = 1;
+        }
+        $category   =   Categories::find($id);
+        $category->active = $set_active;
+        $category->update();
+        return redirect()->route('categories.index')->withSuccess('You have successfully updated status of a Category!');
+
     }
 }

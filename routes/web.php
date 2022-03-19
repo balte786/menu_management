@@ -221,6 +221,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('/{item}/extras/{extras}', 'ItemsController@deleteExtras')->name('extras.destroy');
 
     Route::resource('categories', 'CategoriesController');
+    Route::post('categories/store-category', 'CategoriesController@store_category');
+    Route::post('categories/update-category/{id}', 'CategoriesController@update_category');
+    Route::get('categories/destroy-category/{id}', 'CategoriesController@destroy_category');
+    Route::get('categories/active-category/{id}/{active}', 'CategoriesController@active_category');
+
 
     Route::resource('addresses', 'AddressControler');
     Route::get('/new/address/autocomplete', 'AddressControler@newAddressAutocomplete');

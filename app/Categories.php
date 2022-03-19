@@ -16,6 +16,7 @@ class Categories extends TranslateAwareModel implements Sortable
 
     protected $table = 'categories';
     public $translatable = ['name'];
+    protected $fillable = ['parent_id', 'name'];
 
     public $sortable = [
         'order_column_name' => 'order_index',
@@ -43,5 +44,9 @@ class Categories extends TranslateAwareModel implements Sortable
     public function restorant()
     {
         return $this->belongsTo(\App\Restorant::class);
+    }
+    public function children()
+    {
+        return $this->hasMany('App\Categories', 'parent_id');
     }
 }
