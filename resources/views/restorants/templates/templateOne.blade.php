@@ -87,14 +87,16 @@ function clean($string)
                 <li class="nav-item nav-item-category ">
                     <a class="nav-link  mb-sm-3 mb-md-0 active" data-toggle="tab" role="tab" href="">{{ __('All categories') }}</a>
                 </li>
+
                 @foreach ( $restorant->categories as $key => $category)
                 @if(!$category->aitems->isEmpty())
+
                 @if($category->active == 1)
-                <li class="nav-item nav-item-category" id="{{ 'cat_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
+                <li class="nav-item nav-item-category test" id="{{ 'cat_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
                     <a class="nav-link mb-sm-3 mb-md-0" data-toggle="tab" role="tab" id="{{ 'nav_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" href="#{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">{{ $category->name }}</a>
                 </li>
                 @endif
-                @endif
+                    @endif
                 @endforeach
             </ul>
 
@@ -109,13 +111,60 @@ function clean($string)
 
         @if(!$restorant->categories->isEmpty())
         @foreach ( $restorant->categories as $key => $category)
+        @if ($category->children)
         @if($category->active == 1)
-        @if(!$category->aitems->isEmpty())
+                @foreach ($category->children as $child)
+                <div id="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" class="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
+                    <div>
+                        <h1>{{ $child->name }}</h1><br />
+                    </div>
+                    <div class="row">
+                        @foreach ($child->aitems as $item)
+                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                                <div class="strip">
+                                    @if(!empty($item->image))
+                                        <figure>
+                                            <a onClick="setCurrentItem({{ $item->id }})" href="javascript:void(0)"><img src="{{ $item->logom }}" loading="lazy" data-src="{{ config('global.restorant_details_image') }}" class="img-fluid lazy" alt=""></a>
+                                        </figure>
+                                    @endif
+                                    <div class="res_title"><b><a onClick="setCurrentItem({{ $item->id }})" href="javascript:void(0)">{{ $item->name }}</a></b></div>
+                                    <div class="res_description">{{ $item->short_description}}</div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="res_mimimum">@money($item->price, config('settings.cashier_currency'),config('settings.do_convertion'))</div>
+                                        </div>
+                                        <div class="col-8">
+                                            <div class="allergens" style="text-align: right;">
+                                                @foreach ($item->allergens as $allergen)
+                                                    <div class='allergen' data-toggle="tooltip" data-placement="bottom" title="{{$allergen->title}}">
+                                                        <img src="{{$allergen->image_link}}" />
+                                                    </div>
+                                                @endforeach
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+                        @endforeach
+
+                    </div>
+                </div>
+
+
+
+                @endforeach
+        @endif
+        @else
         <div id="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" class="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
-            <h1>{{ $category->name }}</h1><br />
+            <h1></h1><br />
         </div>
         @endif
-        <div class="row {{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
+
+        {{--<div class="row {{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
             @foreach ($category->aitems as $item)
             <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
                 <div class="strip">
@@ -147,19 +196,9 @@ function clean($string)
                 </div>
             </div>
             @endforeach
-        </div>
-        @endif
+        </div>--}}
         @endforeach
         @else
-        <div class="row">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-                <p class="text-muted mb-0">{{ __('Hmmm... Nothing found!')}}</p>
-                <br /><br /><br />
-                <div class="text-center" style="opacity: 0.2;">
-                    <img src="https://www.jing.fm/clipimg/full/256-2560623_juice-clipart-pizza-box-pizza-box.png" width="200" height="200"></img>
-                </div>
-            </div>
-        </div>
         @endif
         <!-- Check if is installed -->
         @if (isset($doWeHaveImpressumApp)&&$doWeHaveImpressumApp)
