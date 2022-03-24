@@ -1,5 +1,6 @@
 /node_modules
 /public/hot
+/public/uploads/
 /public/storage
 /public/student_files
 /storage/*.key

@@ -17,7 +17,7 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        $categories = Categories::with('children')->whereNull('parent_id')->where('restorant_id',auth()->user()->restorant->id)->get();
+        $categories = Categories::with('children')->where('parent_id',0)->where('restorant_id',auth()->user()->restorant->id)->get();
 
         return view('categories.index')->with([
             'categories'  => $categories

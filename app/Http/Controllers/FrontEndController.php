@@ -824,7 +824,10 @@ class FrontEndController extends Controller
            $formatter->setPattern(config('settings.datetime_workinghours_display_format_new'));
            $formatter->setTimeZone($tz);
 
-           $menuTemplate=config('settings.front_end_template','defaulttemplate');
+            $categories = Categories::with('children')->where('parent_id',0)->where('restorant_id',auth()->user()->restorant->id)->get();
+
+
+            $menuTemplate=config('settings.front_end_template','defaulttemplate');
            $viewFile='restorants.show';
             $template = $restorant->template_id;
             if ($template == 0) {
@@ -875,6 +878,7 @@ class FrontEndController extends Controller
                 'openingTime' => $openingTime,
                 'closingTime' => $closingTime,
                 'usernames' => $usernames,
+                'categories' => $categories,
                 'canDoOrdering'=>$canDoOrdering&&$businessHours->isOpen(),
                 'currentLanguage'=>$currentEnvLanguage,
                 'showGoogleTranslate'=>$doWeHaveGoogleTranslateApp,
