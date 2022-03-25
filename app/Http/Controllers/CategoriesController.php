@@ -186,17 +186,21 @@ class CategoriesController extends Controller
         $category   =   Categories::find($id);
 
         if ($category->children) {
-            foreach ($category->children()->with('items')->get() as $child) {
-                foreach ($child->items as $item) {
-                    $item->update(['category_id' => NULL]);
+            if($category->children()->with('items')->get()){
+                foreach ($category->children()->with('items')->get() as $child) {
+                    dd($child->items);
+                    foreach ($child->items as $item) {
+                        print_r($item);
+                        $item->forceDelete(['category_id' => $id]);
+                    }
                 }
+
+                $category->children()->forceDelete();
             }
 
-            $category->children()->forceDelete();
         }
-
         foreach ($category->items as $item) {
-            $item->update(['category_id' => NULL]);
+            $item->forceDelete();
         }
 
         $category->forceDelete();
