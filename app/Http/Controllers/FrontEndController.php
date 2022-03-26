@@ -824,7 +824,9 @@ class FrontEndController extends Controller
            $formatter->setPattern(config('settings.datetime_workinghours_display_format_new'));
            $formatter->setTimeZone($tz);
 
-            $categories = Categories::with('children')->where('parent_id',0)->where('restorant_id',auth()->user()->restorant->id)->get();
+           $restuarant_id   =   Restorant::where('subdomain',$alias)->first();
+
+            $categories = Categories::with('children')->where('parent_id',0)->where('restorant_id',$restuarant_id->id)->get();
 
 
             $menuTemplate=config('settings.front_end_template','defaulttemplate');
