@@ -164,6 +164,7 @@ function clean($string)
     </div>
 </section>
 
+
 <section class="default-section menu-fix" id="restaurant-content">
 
     <input type="hidden" id="rid" value="{{ $restorant->id }}">
@@ -173,74 +174,29 @@ function clean($string)
             @if(!$restorant->categories->isEmpty())
 
             @foreach ( $restorant->categories as $key => $category)
-            @if(!$category->aitems->isEmpty())
+            @if ($category->children)
             @if($category->active == 1)
-            <div class="menu-fix-item">
+            <!-- <div class="menu-fix-item">
                 <img src="{{ asset('uploads/categories/' . $category->category_img) }}" class="mx-auto d-block" alt="">
-            </div>
+            </div> -->
+            @foreach ($category->children as $child)
             <div class="title text-center" id="{{ 'cat_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
-                <h2 class="text-dark" id="{{ 'nav_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">{{ $category->name }}</h2>
-                <h6>The role of a good cook ware in the preparation of a sumptuous meal cannot be over emphasized then one consider white bread</h6>
+                <h2 class="text-dark" id="{{ 'nav_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">{{ $child->name }}</h2>
+                <!-- <h6>The role of a good cook ware in the preparation of a sumptuous meal cannot be over emphasized then one consider white bread</h6> -->
             </div>
 
             <div class="row">
-                @foreach ($category->aitems as $item)
+                @foreach ($child->aitems as $item)
                 <div class="col-md-4 col-sm-4 col-xs-12 wow fadeInDown animated" data-wow-duration="1000ms" data-wow-delay="700ms" style="visibility: visible; animation-duration: 1000ms; animation-delay: 700ms; animation-name: fadeInDown;">
                     <div class="menu-fix-list">
                         <h5>{{ $item->name }} <span>@money($item->price, config('settings.cashier_currency'),config('settings.do_convertion'))</span></h5>
                         <p>{{ $item->short_description}}</p>
                     </div>
                 </div>
-                <!-- <div class="col-md-4 col-sm-4 col-xs-12 wow fadeInDown animated" data-wow-duration="1000ms" data-wow-delay="700ms" style="visibility: visible; animation-duration: 1000ms; animation-delay: 700ms; animation-name: fadeInDown;">
-                    <div class="menu-fix-list">
-                        <h5>Coffe Ice Milk <span>$ 15.00</span></h5>
-                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 wow fadeInDown animated" data-wow-duration="1000ms" data-wow-delay="700ms" style="visibility: visible; animation-duration: 1000ms; animation-delay: 700ms; animation-name: fadeInDown;">
-                    <div class="menu-fix-list">
-                        <h5>Hot Coffee <span>$ 15.00</span></h5>
-                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 wow fadeInDown animated" data-wow-duration="1000ms" data-wow-delay="700ms" style="visibility: visible; animation-duration: 1000ms; animation-delay: 700ms; animation-name: fadeInDown;">
-                    <div class="menu-fix-list">
-                        <h5>Coffee Socola <span>$ 15.00</span></h5>
-                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 wow fadeInDown animated" data-wow-duration="1000ms" data-wow-delay="700ms" style="visibility: visible; animation-duration: 1000ms; animation-delay: 700ms; animation-name: fadeInDown;">
-                    <div class="menu-fix-list">
-                        <h5>Hot Coffee <span>$ 15.00</span></h5>
-                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 wow fadeInDown animated" data-wow-duration="1000ms" data-wow-delay="700ms" style="visibility: visible; animation-duration: 1000ms; animation-delay: 700ms; animation-name: fadeInDown;">
-                    <div class="menu-fix-list">
-                        <h5>Coffe Ice <span>$ 15.00</span></h5>
-                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 wow fadeInDown animated" data-wow-duration="1000ms" data-wow-delay="700ms" style="visibility: visible; animation-duration: 1000ms; animation-delay: 700ms; animation-name: fadeInDown;">
-                    <div class="menu-fix-list">
-                        <h5>Hot Coffee <span>$ 15.00</span></h5>
-                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 wow fadeInDown animated" data-wow-duration="1000ms" data-wow-delay="700ms" style="visibility: visible; animation-duration: 1000ms; animation-delay: 700ms; animation-name: fadeInDown;">
-                    <div class="menu-fix-list">
-                        <h5>Coffe Ice <span>$ 15.00</span></h5>
-                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-4 col-xs-12 wow fadeInDown animated" data-wow-duration="1000ms" data-wow-delay="700ms" style="visibility: visible; animation-duration: 1000ms; animation-delay: 700ms; animation-name: fadeInDown;">
-                    <div class="menu-fix-list">
-                        <h5>Coffe Ice Milk <span>$ 15.00</span></h5>
-                        <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames</p>
-                    </div>
-                </div> -->
+
                 @endforeach
             </div>
+            @endforeach
             @endif
             @endif
             @endforeach

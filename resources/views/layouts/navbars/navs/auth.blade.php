@@ -50,7 +50,7 @@
            
 
             <li class="nav-item dropdown">
-                <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                     <div class="media align-items-center">
                         <span class="avatar avatar-sm rounded-circle">
                             

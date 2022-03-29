@@ -7,7 +7,7 @@
         </a>
     </li>
 
-
+    
     {{--<li class="nav-item">
             <a class="nav-link" href="/live">
                 <i class="ni ni-basket text-success"></i> {{ __('Live Orders') }}
@@ -29,11 +29,11 @@
             <i class="ni ni-shop text-info"></i> {{ __('Restaurant') }}
         </a>
     </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{url('categories')}}">
-                <i class="ni ni-collection text-pink"></i>Categories
-            </a>
-        </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{url('categories')}}">
+            <i class="ni ni-collection text-pink"></i>Categories
+        </a>
+    </li>
     <li class="nav-item">
         <a class="nav-link" href="{{ route('items.index') }}">
             <i class="ni ni-collection text-pink"></i> {{ __('Build Menu') }}
@@ -78,22 +78,22 @@
     </li>
     @endforeach
 
-    <!--
+
     @if (config('app.isqrsaas')&&!config('settings.is_whatsapp_ordering_mode')&&!config('settings.is_pos_cloud_mode'))
     <li class="nav-item">
         <a class="nav-link" href="{{ route('qr') }}">
             <i class="ni ni-mobile-button text-red"></i> {{ __('QR Builder') }}
         </a>
     </li>
-    @if(config('settings.enable_guest_log'))
+    <!-- @if(config('settings.enable_guest_log'))
     <li class="nav-item">
         <a class="nav-link" href="{{ route('admin.restaurant.visits.index') }}">
             <i class="ni ni-calendar-grid-58 text-blue"></i> {{ __('Customers log') }}
         </a>
     </li>
+    @endif -->
     @endif
-    @endif
-    -->
+
 
     @if (config('app.isqrsaas')&&(config('settings.is_whatsapp_ordering_mode') || in_array("poscloud", config('global.modules',[])) || in_array("deliveryqr", config('global.modules',[])) ))
     {{-- <li class="nav-item">

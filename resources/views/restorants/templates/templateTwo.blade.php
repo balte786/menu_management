@@ -314,6 +314,7 @@ function clean($string)
                             <a class="nav-link <?php if ($j == 0) echo 'active'; ?>" id="{{ ''.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" data-toggle="tab" href="#{{ 'cat_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" role="tab" aria-controls="breakfast" aria-selected="true">{{ $category->name }}</a>
                         </li>
 
+
                         @endif
                         <?php
                         $j++;
@@ -327,14 +328,18 @@ function clean($string)
 
                         @if(!$restorant->categories->isEmpty())
                         @foreach ( $restorant->categories as $key => $category)
+                        @if ($category->children)
                         @if($category->active == 1)
-                        @if(!$category->aitems->isEmpty())
 
-
+                        @foreach ($category->children as $child)
                         <div class="tab-pane <?php if ($i == 0) echo 'active show';
                                                 else echo 'fade';  ?>" id="{{ 'cat_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" role="tabpane1">
+
+                            <div>
+                                <h1>{{ $child->name }}</h1><br />
+                            </div>
                             <ul class="list_none menu_list list_border animation animated fadeInUp" data-animation="fadeInUp" data-animation-delay="0.04s" style="animation-delay: 0.04s; opacity: 1;">
-                                @foreach ($category->aitems as $item)
+                                @foreach ($child->aitems as $item)
                                 <li>
                                     <div class="single_menu_product">
                                         <div class="menu_product_img">
@@ -360,6 +365,7 @@ function clean($string)
 
                             </ul>
                         </div>
+                        @endforeach
 
 
                         @endif
