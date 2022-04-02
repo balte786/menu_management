@@ -84,6 +84,7 @@ class RestorantController extends Controller
      */
     public function create()
     {
+
         if (auth()->user()->hasRole('admin')) {
             $title=Module::has('cloner')&&isset($_GET['cloneWith'])?__('Clone Restaurant')." ".(Restorant::findOrFail($_GET['cloneWith'])->name):__('Add Restaurant');
             return view('restorants.create',['title'=>$title]);
@@ -117,7 +118,7 @@ class RestorantController extends Controller
         $owner->email = strip_tags($request->email_owner);
         $owner->phone = strip_tags($request->phone_owner) | '';
         $owner->api_token = Str::random(80);
-
+        $owner->restaurant_id  =  Auth::user()->restaurant_id;
         $owner->password = Hash::make($generatedPassword);
         $owner->save();
 
@@ -136,6 +137,14 @@ class RestorantController extends Controller
         $restaurant->phone = $owner->phone;
         $restaurant->subdomain = $this->makeAlias(strip_tags($request->name));
         $restaurant->save();
+
+        User::where('id', $owner->id)
+            ->update([
+                'restaurant_id' => $restaurant->id
+            ]);
+
+
+
 
        //default hours
        if(!$request->has('cloneWith')){
