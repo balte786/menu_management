@@ -740,16 +740,14 @@ class FrontEndController extends Controller
 
     public function restorant($alias)
     {
-       
-
         //Do we have impressum app
         $doWeHaveImpressumApp=Module::has('impressum');
 
 
         $subDomain = $this->getSubDomain();
-        if ($subDomain && $alias !== $subDomain) {
+       /* if ($subDomain && $alias !== $subDomain) {
             return redirect()->route('restorant', $subDomain);
-        }
+        }*/
         $restorant = Restorant::whereRaw('REPLACE(subdomain, "-", "") = ?', [str_replace("-","",$alias)])->first();
 
         //Do we have google translate app
