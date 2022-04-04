@@ -87,16 +87,12 @@ function clean($string)
                 <li class="nav-item nav-item-category ">
                     <a class="nav-link  mb-sm-3 mb-md-0 active" data-toggle="tab" role="tab" href="">{{ __('All categories') }}</a>
                 </li>
-
                 @foreach ( $restorant->categories as $key => $category)
-                @if(!$category->aitems->isEmpty())
-
                 @if($category->active == 1)
                 <li class="nav-item nav-item-category test" id="{{ 'cat_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
                     <a class="nav-link mb-sm-3 mb-md-0" data-toggle="tab" role="tab" id="{{ 'nav_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" href="#{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">{{ $category->name }}</a>
                 </li>
-                @endif
-                    @endif
+               @endif
                 @endforeach
             </ul>
 
