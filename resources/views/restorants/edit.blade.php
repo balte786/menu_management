@@ -71,6 +71,7 @@
                                     <a target="_blank" href="{{ $restorant->getLinkAttribute() }}" class="btn btn-sm btn-success">{{ __('View it') }}</a>
                                     @else
                                     <a target="_blank" href="{{ route('vendor',$restorant->subdomain) }}" class="btn btn-sm btn-success">{{ __('Menu Preview') }}</a>
+                                    <a target="_blank" href="{{URL::to('/generate-xml/'.$restorant->subdomain)}}" class="btn btn-sm btn-primary">Export XML</a>
                                     @endif
                                     @if ($hasCloner)
                                     <a href="{{ route('admin.restaurants.create')."?cloneWith=".$restorant->id }}" class="btn btn-sm btn-warning text-white">{{ __('Clone it') }}</a>

@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
@@ -921,5 +922,67 @@ class FrontEndController extends Controller
             'status' => true,
             'errMsg' => '',
         ]);
+    }
+
+    public function generateXml($alias='kfc'){
+
+        $restuarant_id   =   Restorant::where('subdomain',$alias)->first();
+        $categories = Categories::with('children')->where('parent_id',0)->where('restorant_id',$restuarant_id->id)->get();
+
+        $dom     = new \DOMDocument('1.0', 'utf-8');
+        $root      = $dom->createElement('Recipe');
+        $heading      = $dom->createElement('Heading',$alias);
+        $subheading      = $dom->createElement('Subheading',$restuarant_id->description);
+        $root->appendChild($heading);
+        $root->appendChild($subheading);
+        foreach ($categories as $cat){
+            $main_cat_name      =   htmlspecialchars($cat->name);
+
+            $book = $dom->createElement('Main_Category');
+            $name     = $dom->createElement('name', $main_cat_name);
+            $book->appendChild($name);
+            $Subcategories = Categories::where('parent_id',$cat->id)->where('restorant_id',$restuarant_id->id)->get();
+            foreach ($Subcategories as $sub_cat) {
+                $subcategory = $dom->createElement('sub_category');
+                $sub_name = $dom->createElement('name', $sub_cat->name);
+                $subcategory->appendChild($sub_name);
+                $items_count = Items::where('category_id',$sub_cat->id)->count();
+                $items = Items::where('category_id',$sub_cat->id)->get();
+                if($items_count>0){
+                    foreach ($items as $item_rec){
+                        $item = $dom->createElement('Item');
+                        $item_name = $dom->createElement('item_name', $item_rec->name);
+                        $item->appendChild($item_name);
+
+                        $item_description = $dom->createElement('item_description', $item_rec->description);
+                        $item->appendChild($item_description);
+
+                        $item_price = $dom->createElement('item_price', $item_rec->price);
+                        $item->appendChild($item_price);
+
+
+                        $subcategory->appendChild($item);
+                    }
+                }
+
+
+
+
+                $book->appendChild($subcategory);
+            }
+
+
+            $root->appendChild($book);
+
+
+        }
+        $dom->appendChild($root);
+        header('Content-type: text/xml');
+        header('Content-Disposition: attachment; filename="'.$alias.'_export.xml"');
+        $dom->save('php://stdout');
+        echo $dom->saveXML();
+        exit;
+
+
     }
 }
