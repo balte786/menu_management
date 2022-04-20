@@ -19,6 +19,9 @@ Route::get('/city/{city}', 'FrontEndController@showStores')->name('show.stores')
 Route::get('/lang', 'FrontEndController@langswitch')->name('lang.switch');
 
 Route::post('/search/location', 'FrontEndController@getCurrentLocation')->name('search.location');
+Route::get('/generate-xml/{id}', [App\Http\Controllers\FrontEndController::class, 'generateXml']);
+
+
 
 Auth::routes(['register' => config('app.isft')]);
 
