@@ -924,7 +924,66 @@ class FrontEndController extends Controller
         ]);
     }
 
-    public function generateXml($alias='kfc'){
+    public function generateXml($alias = 'kfc')
+    {
+
+        $restuarant_id   =   Restorant::where('subdomain', $alias)->first();
+        $categories = Categories::with('children')->where('parent_id', 0)->where('restorant_id', $restuarant_id->id)->get();
+
+        $dom     = new \DOMDocument('1.0', 'utf-8');
+        $root      = $dom->createElement('Recipe');
+
+        foreach ($categories as $cat) {
+
+            $main_cat_name      =   htmlspecialchars($cat->name);
+            $heading      = $dom->createElement('Heading',  $main_cat_name);
+            $subheading      = $dom->createElement('Subheading', $restuarant_id->description);
+            $root->appendChild($heading);
+            $root->appendChild($subheading);
+
+            $book = $dom->createElement($main_cat_name);
+
+            $Subcategories = Categories::where('parent_id', $cat->id)->where('restorant_id', $restuarant_id->id)->get();
+            foreach ($Subcategories as $sub_cat) {
+
+                $items_count = Items::where('category_id', $sub_cat->id)->count();
+                $items = Items::where('category_id', $sub_cat->id)->get();
+                $name     = $dom->createElement('Food',  $sub_cat->name);
+                $book->appendChild($name);
+
+                if ($items_count > 0) {
+                    foreach ($items as $item_rec) {
+                        $item = $dom->createElement('Additions');
+                        $item_name = $dom->createElement('name', $item_rec->name);
+                        $item->appendChild($item_name);
+
+                        $item_description = $dom->createElement('Description', $item_rec->description);
+                        $item->appendChild($item_description);
+
+                        $item_price = $dom->createElement('Additional-price', $item_rec->price);
+                        $item->appendChild($item_price);
+
+                    }
+                }
+
+
+
+
+                $book->appendChild($item);
+            }
+
+
+            $root->appendChild($book);
+        }
+        $dom->appendChild($root);
+        header('Content-type: text/xml');
+        header('Content-Disposition: attachment; filename="' . $alias . '_export.xml"');
+        $dom->save('php://stdout');
+        echo $dom->saveXML();
+        exit;
+    }
+
+    /*public function generateXml($alias='kfc'){
 
         $restuarant_id   =   Restorant::where('subdomain',$alias)->first();
         $categories = Categories::with('children')->where('parent_id',0)->where('restorant_id',$restuarant_id->id)->get();
@@ -984,5 +1043,5 @@ class FrontEndController extends Controller
         exit;
 
 
-    }
+    }*/
 }
