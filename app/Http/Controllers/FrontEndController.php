@@ -933,9 +933,11 @@ class FrontEndController extends Controller
         $dom     = new \DOMDocument('1.0', 'utf-8');
         $root      = $dom->createElement('Recipe');
 
+
+
         foreach ($categories as $cat) {
 
-            $main_cat_name      =   htmlspecialchars($cat->name);
+            $main_cat_name      =   str_replace(' ', "_",strtolower(htmlspecialchars($cat->name)));
             $heading      = $dom->createElement('Heading',  $main_cat_name);
             $subheading      = $dom->createElement('Subheading', $restuarant_id->description);
             $root->appendChild($heading);
