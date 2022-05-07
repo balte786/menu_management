@@ -498,7 +498,7 @@ a:hover {
     overflow: hidden;
     position: relative;
     height: 200px;
-    background-color: #ededed;
+    background-color: #fff!important;
   }
 
   .strip_city figure {
@@ -506,7 +506,7 @@ a:hover {
     overflow: hidden;
     position: relative;
     height: 300px;
-    background-color: #ededed;
+    background-color: white;
   }
 
   .strip figure img {

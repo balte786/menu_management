@@ -23,16 +23,16 @@
                 <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
                     <a data-scroll href="#product" class="nav-link">{{ __('qrlanding.product') }}</a>
                 </li>
-                <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
+                {{--<li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
                     <a data-scroll href="#pricing" class="nav-link" >{{ __('qrlanding.pricing') }}</a>
-                </li>
+                </li>--}}
                 <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
                     <a data-scroll href="#testimonials" class="nav-link">{{ __('qrlanding.testimonials') }}</a>
                 </li>
                 <li class="nav-item" data-toggle="collapse" data-target=".navbar-collapse.show">
                     <a data-scroll href="#demo" class="nav-link">{{ __('qrlanding.demo') }}</a>
                 </li>
-                @if(count($availableLanguages)>1)
+               {{-- @if(count($availableLanguages)>1)
                 <li class="nav-item dropdown">
                     <a class="nav-link" href="#">
                         @foreach ($availableLanguages as $short => $lang)
@@ -48,7 +48,7 @@
                         @endforeach
                     </ul>
                 </li>
-                @endif
+                @endif--}}
                 @if(!empty(config('global.facebook')))
                 <li class="nav-item">
                     <a class="nav-link nav-link-icon" href="{{ config('global.facebook') }}" target="_blank" data-toggle="tooltip" title="{{ __('Like us on Facebook') }}">
@@ -76,9 +76,9 @@
                     {{ __('qrlanding.login')}}
                 @endguest
             </a>
-            @guest()
+           {{-- @guest()
                 <a href="{{ route('newrestaurant.register') }}" target="_blank" class="btn btn-md btn-secondary animate-up-2"><i class="fas fa-paper-plane mr-2"></i>{{ __('qrlanding.register')}}</a>
-            @endguest
+            @endguest--}}
 
         </div>
         <div class="d-flex d-lg-none align-items-center">

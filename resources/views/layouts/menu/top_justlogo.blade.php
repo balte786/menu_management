@@ -125,14 +125,14 @@
           @endif
 
 
-          @if(config('settings.enable_guest_log'))
+          <!-- @if(config('settings.enable_guest_log'))
           <a href="{{ route('register.visit',['restaurant_id'=>$restorant->id])}}" class="nav-link" style="cursor:pointer;">
             <i class="fa fa-calendar-plus-o"></i>
             <span class="nav-link-inner--text">{{ __('Register visit') }}</span>
           </a>
-          @endif
+          @endif -->
 
-          @if(isset($hasGuestOrders)&&$hasGuestOrders)
+          <!-- @if(isset($hasGuestOrders)&&$hasGuestOrders)
 
           <a href="{{ route('guest.orders')}}" class="nav-link" style="cursor:pointer;">
 
@@ -151,7 +151,7 @@
             <span class="nav-link-inner--text">{{ __('Cart') }}</span>
           </a>
           @endif
-
+ -->
 
           @endisset
 
