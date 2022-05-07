@@ -1,5 +1,5 @@
 <section class="section-header pb-7 pb-lg-11 bg-soft">
-    <div class="container">
+    {{--<div class="container">
         <div class="row justify-content-between align-items-center">
             <div class="col-12 col-md-6 order-2 order-lg-1">
             <img src="{{ asset('impactfront') }}/img/flayer.png" alt="">
@@ -28,6 +28,6 @@
                   </div>
               </div>
         </div>
-    </div>
+    </div>--}}
     <div class="pattern bottom"></div>
 </section>

@@ -32,32 +32,7 @@ function clean($string)
     </div>
 </section>
 
-<section class="section pt-lg-0 mb--5 mt--9 d-none d-md-none d-lg-block d-lx-block">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="title white" <?php if ($restorant->description) {
-                                                echo 'style="border-bottom: 1px solid #f2f2f2;"';
-                                            } ?>>
-                    <h1 class="display-3 text-white notranslate" data-toggle="modal" data-target="#modal-restaurant-info" style="cursor: pointer;">{{ $restorant->name }}</h1>
-                    <p class="display-4" style="margin-top: 120px">{{ $restorant->description }}</p>
 
-                    <p><i class="ni ni-watch-time"></i> @if(!empty($openingTime))<span class="closed_time">{{__('Opens')}} {{ $openingTime }}</span>@endif @if(!empty($closingTime))<span class="opened_time">{{__('Opened until')}} {{ $closingTime }}</span> @endif | @if(!empty($restorant->address))<i class="ni ni-pin-3"></i></i> <a target="_blank" href="https://www.google.com/maps/search/?api=1&query={{ urlencode($restorant->address) }}"><span class="notranslate">{{ $restorant->address }}</span></a> | @endif @if(!empty($restorant->phone)) <i class="ni ni-mobile-button"></i> <a href="tel:{{$restorant->phone}}">{{ $restorant->phone }} </a> @endif</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-lg-12">
-                @include('partials.flash')
-            </div>
-            @if (auth()->user()&&auth()->user()->hasRole('admin'))
-            @include('restorants.admininfo')
-            @endif
-        </div>
-    </div>
-
-</section>
 <section class="section section-lg d-md-block d-lg-none d-lx-none" style="padding-bottom: 0px">
     <div class="container">
         <div class="row">
@@ -92,7 +67,7 @@ function clean($string)
                 <li class="nav-item nav-item-category test" id="{{ 'cat_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
                     <a class="nav-link mb-sm-3 mb-md-0" data-toggle="tab" role="tab" id="{{ 'nav_'.clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" href="#{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">{{ $category->name }}</a>
                 </li>
-               @endif
+                @endif
                 @endforeach
             </ul>
 
@@ -109,50 +84,50 @@ function clean($string)
         @foreach ( $restorant->categories as $key => $category)
         @if ($category->children)
         @if($category->active == 1)
-                @foreach ($category->children as $child)
-                <div id="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" class="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
-                    <div>
-                        <h1>{{ $child->name }}</h1><br />
-                    </div>
-                    <div class="row">
-                        @foreach ($child->aitems as $item)
-                            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
-                                <div class="strip">
-                                    @if(!empty($item->image))
-                                        <figure>
-                                            <a onClick="setCurrentItem({{ $item->id }})" href="javascript:void(0)"><img src="{{ $item->logom }}" loading="lazy" data-src="{{ config('global.restorant_details_image') }}" class="img-fluid lazy" alt=""></a>
-                                        </figure>
-                                    @endif
-                                    <div class="res_title"><b><a onClick="setCurrentItem({{ $item->id }})" href="javascript:void(0)">{{ $item->name }}</a></b></div>
-                                    <div class="res_description">{{ $item->short_description}}</div>
-                                    <div class="row">
-                                        <div class="col-4">
-                                            <div class="res_mimimum">@money($item->price, config('settings.cashier_currency'),config('settings.do_convertion'))</div>
-                                        </div>
-                                        <div class="col-8">
-                                            <div class="allergens" style="text-align: right;">
-                                                @foreach ($item->allergens as $allergen)
-                                                    <div class='allergen' data-toggle="tooltip" data-placement="bottom" title="{{$allergen->title}}">
-                                                        <img src="{{$allergen->image_link}}" />
-                                                    </div>
-                                                @endforeach
-
-                                            </div>
-                                        </div>
+        @foreach ($category->children as $child)
+        <div id="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" class="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
+            <div>
+                <h1>{{ $child->name }}</h1><br />
+            </div>
+            <div class="row">
+                @foreach ($child->aitems as $item)
+                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+                    <div class="strip">
+                        @if(!empty($item->image))
+                        <figure>
+                            <a onClick="setCurrentItem({{ $item->id }})" href="javascript:void(0)"><img src="{{ $item->logom }}" loading="lazy" data-src="{{ config('global.restorant_details_image') }}" class="img-fluid lazy" alt=""></a>
+                        </figure>
+                        @endif
+                        <div class="res_title"><b><a onClick="setCurrentItem({{ $item->id }})" href="javascript:void(0)">{{ $item->name }}</a></b></div>
+                        <div class="res_description">{{ $item->short_description}}</div>
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="res_mimimum">@money($item->price, config('settings.cashier_currency'),config('settings.do_convertion'))</div>
+                            </div>
+                            <div class="col-8">
+                                <div class="allergens" style="text-align: right;">
+                                    @foreach ($item->allergens as $allergen)
+                                    <div class='allergen' data-toggle="tooltip" data-placement="bottom" title="{{$allergen->title}}">
+                                        <img src="{{$allergen->image_link}}" />
                                     </div>
-
-
+                                    @endforeach
 
                                 </div>
                             </div>
-                        @endforeach
+                        </div>
+
+
 
                     </div>
                 </div>
-
-
-
                 @endforeach
+
+            </div>
+        </div>
+
+
+
+        @endforeach
         @endif
         @else
         <div id="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}" class="{{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
@@ -161,50 +136,50 @@ function clean($string)
         @endif
 
         {{--<div class="row {{ clean(str_replace(' ', '', strtolower($category->name)).strval($key)) }}">
-            @foreach ($category->aitems as $item)
-            <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
-                <div class="strip">
-                    @if(!empty($item->image))
-                    <figure>
-                        <a onClick="setCurrentItem({{ $item->id }})" href="javascript:void(0)"><img src="{{ $item->logom }}" loading="lazy" data-src="{{ config('global.restorant_details_image') }}" class="img-fluid lazy" alt=""></a>
-                    </figure>
-                    @endif
-                    <div class="res_title"><b><a onClick="setCurrentItem({{ $item->id }})" href="javascript:void(0)">{{ $item->name }}</a></b></div>
-                    <div class="res_description">{{ $item->short_description}}</div>
-                    <div class="row">
-                        <div class="col-4">
-                            <div class="res_mimimum">@money($item->price, config('settings.cashier_currency'),config('settings.do_convertion'))</div>
-                        </div>
-                        <div class="col-8">
-                            <div class="allergens" style="text-align: right;">
-                                @foreach ($item->allergens as $allergen)
-                                <div class='allergen' data-toggle="tooltip" data-placement="bottom" title="{{$allergen->title}}">
-                                    <img src="{{$allergen->image_link}}" />
-                                </div>
-                                @endforeach
-
+        @foreach ($category->aitems as $item)
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+            <div class="strip">
+                @if(!empty($item->image))
+                <figure>
+                    <a onClick="setCurrentItem({{ $item->id }})" href="javascript:void(0)"><img src="{{ $item->logom }}" loading="lazy" data-src="{{ config('global.restorant_details_image') }}" class="img-fluid lazy" alt=""></a>
+                </figure>
+                @endif
+                <div class="res_title"><b><a onClick="setCurrentItem({{ $item->id }})" href="javascript:void(0)">{{ $item->name }}</a></b></div>
+                <div class="res_description">{{ $item->short_description}}</div>
+                <div class="row">
+                    <div class="col-4">
+                        <div class="res_mimimum">@money($item->price, config('settings.cashier_currency'),config('settings.do_convertion'))</div>
+                    </div>
+                    <div class="col-8">
+                        <div class="allergens" style="text-align: right;">
+                            @foreach ($item->allergens as $allergen)
+                            <div class='allergen' data-toggle="tooltip" data-placement="bottom" title="{{$allergen->title}}">
+                                <img src="{{$allergen->image_link}}" />
                             </div>
+                            @endforeach
+
                         </div>
                     </div>
-
-
-
                 </div>
-            </div>
-            @endforeach
-        </div>--}}
-        @endforeach
-        @else
-        @endif
-        <!-- Check if is installed -->
-        @if (isset($doWeHaveImpressumApp)&&$doWeHaveImpressumApp)
 
-        <!-- Check if there is value -->
-        @if (strlen($restorant->getConfig('impressum_value',''))>5)
-        <h3>{{$restorant->getConfig('impressum_title','')}}</h3>
-        <?php echo $restorant->getConfig('impressum_value', ''); ?>
-        @endif
-        @endif
+
+
+            </div>
+        </div>
+        @endforeach
+    </div>--}}
+    @endforeach
+    @else
+    @endif
+    <!-- Check if is installed -->
+    @if (isset($doWeHaveImpressumApp)&&$doWeHaveImpressumApp)
+
+    <!-- Check if there is value -->
+    @if (strlen($restorant->getConfig('impressum_value',''))>5)
+    <h3>{{$restorant->getConfig('impressum_title','')}}</h3>
+    <?php echo $restorant->getConfig('impressum_value', ''); ?>
+    @endif
+    @endif
 
     </div>
 

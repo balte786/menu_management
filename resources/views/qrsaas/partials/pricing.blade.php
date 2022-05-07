@@ -1,4 +1,4 @@
-<section id="pricing" class="section-header bg-primary text-white">
+{{--<section id="pricing" class="section-header bg-primary text-white">
     <div class="container">
 
         <div class="row justify-content-center mb-6">
@@ -15,4 +15,4 @@
 
     </div>
 
-</section>
+</section>--}}
