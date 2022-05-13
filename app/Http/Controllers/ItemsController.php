@@ -81,7 +81,10 @@ class ItemsController extends Controller
 
         //Since 2.1.7 - there is sorting. 
         //$categories = auth()->user()->restorant->categories;
-        $categories = Categories::where(['restorant_id'=>auth()->user()->restorant->id,'active'=>1])->where('parent_id','!=',0)->get();
+        $categories = Categories::where(['restorant_id' => auth()->user()->restorant->id, 'active' => 1])
+            ->where('parent_id', '!=', 0)
+            ->orderby('order_index', 'ASC')
+            ->get();
         //$categoires =  Categories::where('restorant_id', 21)->get();
         //If first item order starts with 0
         if ($categories->first() && $categories->first()->order_index == 0) {
@@ -89,7 +92,10 @@ class ItemsController extends Controller
 
             //Re-get categories
             //$categories = auth()->user()->restorant->categories;
-            $categories = Categories::where(['restorant_id'=>auth()->user()->restorant->id,'active'=>1])->where('parent_id','!=',0)->get();
+            $categories = Categories::where(['restorant_id' => auth()->user()->restorant->id, 'active' => 1])
+                ->where('parent_id', '!=', 0)
+                ->orderby('order_index', 'ASC')
+                ->get();
         }
 
         return view('items.index', [

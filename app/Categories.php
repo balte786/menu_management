@@ -29,7 +29,7 @@ class Categories extends TranslateAwareModel implements Sortable
         return static::query()->where('restorant_id', $this->restorant_id);
     }
 
-    
+
 
     public function items()
     {
@@ -38,7 +38,7 @@ class Categories extends TranslateAwareModel implements Sortable
 
     public function aitems()
     {
-        return $this->hasMany(\App\Items::class, 'category_id', 'id')->where(['items.available'=>1]);
+        return $this->hasMany(\App\Items::class, 'category_id', 'id')->where(['items.available' => 1]);
     }
 
     public function restorant()
@@ -47,6 +47,6 @@ class Categories extends TranslateAwareModel implements Sortable
     }
     public function children()
     {
-        return $this->hasMany('App\Categories', 'parent_id');
+        return $this->hasMany('App\Categories', 'parent_id')->orderby('order_index', 'ASC');
     }
 }

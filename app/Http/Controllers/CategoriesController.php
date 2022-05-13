@@ -17,19 +17,20 @@ class CategoriesController extends Controller
      */
     public function index()
     {
-        $categories = Categories::with('children')->where('parent_id',0)->where('restorant_id',auth()->user()->restorant->id)->get();
+        $categories = Categories::with('children')->where('parent_id', 0)->where('restorant_id', auth()->user()->restorant->id)->get();
 
         return view('categories.index')->with([
             'categories'  => $categories
         ]);
     }
 
-    public function store_category(Request $request){
+    public function store_category(Request $request)
+    {
 
         $validatedData = $this->validate($request, [
             'name'      => 'required|min:3|max:255|string',
             'parent_id' => 'sometimes|nullable|numeric',
-            'restorant_id'=>'required'
+            'restorant_id' => 'required'
         ]);
         $category = new Categories;
         $category->name = strip_tags($request->name);
@@ -50,6 +51,9 @@ class CategoriesController extends Controller
     {
         $category   =   Categories::find($id);
         $category->name = $request->name;
+        if ($request->has('parent_id')) {
+            $category->parent_id = $request->parent_id;
+        }
         if ($request->hasFile('cat_img')) {
 
             $destination = public_path("uploads/categories/" . $category->category_img);
@@ -181,12 +185,13 @@ class CategoriesController extends Controller
         return redirect()->route('items.index')->withStatus(__('Category successfully deleted.'));
     }
 
-    public function destroy_category($id){
+    public function destroy_category($id)
+    {
 
         $category   =   Categories::find($id);
 
         if ($category->children) {
-            if($category->children()->with('items')->get()){
+            if ($category->children()->with('items')->get()) {
                 foreach ($category->children()->with('items')->get() as $child) {
                     dd($child->items);
                     foreach ($child->items as $item) {
@@ -197,7 +202,6 @@ class CategoriesController extends Controller
 
                 $category->children()->forceDelete();
             }
-
         }
         foreach ($category->items as $item) {
             $item->forceDelete();
@@ -208,17 +212,17 @@ class CategoriesController extends Controller
         return redirect()->route('categories.index')->withSuccess('You have successfully deleted a Category!');
     }
 
-    public function active_category($id,$active){
+    public function active_category($id, $active)
+    {
 
-        if($active==1){
+        if ($active == 1) {
             $set_active = 0;
-        }else{
+        } else {
             $set_active = 1;
         }
         $category   =   Categories::find($id);
         $category->active = $set_active;
         $category->update();
         return redirect()->route('categories.index')->withSuccess('You have successfully updated status of a Category!');
-
     }
 }
