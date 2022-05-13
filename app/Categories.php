@@ -26,7 +26,7 @@ class Categories extends TranslateAwareModel implements Sortable
     //Used for sort grouping
     public function buildSortQuery()
     {
-        return static::query()->where('restorant_id', $this->restorant_id);
+        return static::query()->where('restorant_id', $this->restorant_id)->where('parent_id', '!=', 0);
     }
 
 
