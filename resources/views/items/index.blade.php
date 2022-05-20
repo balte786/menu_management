@@ -5,6 +5,7 @@
 @section('content')
 @include('items.partials.modals', ['restorant_id' => $restorant_id])
 
+
 <div class="header bg-gradient-primary pb-7 pt-5 pt-md-8">
     <div class="container-fluid">
         <div class="header-body">
@@ -12,17 +13,17 @@
                 <!--<div class="col-lg-6 col-7">
                 </div>-->
                 <div class="col-lg-12 col-12 text-right">
-                    @if (isset($hasMenuPDf)&&$hasMenuPDf)
+                    <!-- @if (isset($hasMenuPDf)&&$hasMenuPDf)
                     <a target="_blank" href="{{ route('menupdf.download')}}" class="btn btn-sm btn-danger"><i class="fas fa-file-pdf"></i> {{ __('PDF Menu') }}</a>
                     @endif
-                    {{--<button class="btn btn-icon btn-1 btn-sm btn-info" type="button" data-toggle="modal" data-target="#modal-items-category" data-toggle="tooltip" data-placement="top" title="{{ __('Add new category')}}">
+                    <!-- <button class="btn btn-icon btn-1 btn-sm btn-info" type="button" data-toggle="modal" data-target="#modal-items-category" data-toggle="tooltip" data-placement="top" title="{{ __('Add new category')}}">
                         <span class="btn-inner--icon"><i class="fa fa-plus"></i> {{ __('Add new category') }}</span>
-                    </button>
+                    </button> -->
                     @if($canAdd)
-                    <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#modal-import-items" onClick=(setRestaurantId({{ $restorant_id }}))>
+                    <!-- <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#modal-import-items" onClick=(setRestaurantId({{ $restorant_id }}))>
                         <span class="btn-inner--icon"><i class="fa fa-file-excel"></i> {{ __('Import from CSV') }}</span>
-                    </button>
-                    @endif--}}
+                    </button> -->
+                    @endif -->
                     @if(config('settings.enable_miltilanguage_menus'))
                     @include('items.partials.languages')
                     @endif
@@ -83,7 +84,7 @@
                         <div class="row">
                             <div class="col">
 
-                                <span class="h1 font-weight-bold mb-0 text-white">{{ $category->name }}</span>
+                                <span class="h1 font-weight-bold mb-0 text-white">{{ $category->parent->name }}<br>&nbsp;&nbsp;{{ $category->name }}</span>
                             </div>
                             <div class="col-auto">
                                 <div class="row">
@@ -101,6 +102,9 @@
                                     <button class="btn btn-icon btn-1 btn-sm btn-primary" type="button" data-toggle="modal" data-target="#modal-new-item" data-toggle="tooltip" data-placement="top" title="{{ __('Add item') }} in {{$category->name}}" onClick=(setSelectedCategoryId({{ $category->id }}))>
                                         <span class="btn-inner--icon"><i class="fa fa-plus"></i></span>
                                     </button>
+                                    <!-- <button class="btn btn-icon btn-1 btn-sm btn-primary" type="button" data-toggle="modal" data-target="#modal-new-item" data-toggle="tooltip" data-placement="top" title="{{ __('Add item') }} in {{$category->name}}" onClick=(setSelectedCategoryId({{ $category->id }}))>
+                                        <span class="btn-inner--icon"><i class="fa fa-plus"></i></span>
+                                    </button> -->
                                     @else
                                     <a href="{{ route('plans.current')}}" class="btn btn-icon btn-1 btn-sm btn-warning" type="button">
                                         <span class="btn-inner--icon"><i class="fa fa-plus"></i> {{ __('Menu size limit reaced') }}</span>

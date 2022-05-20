@@ -49,4 +49,9 @@ class Categories extends TranslateAwareModel implements Sortable
     {
         return $this->hasMany('App\Categories', 'parent_id')->orderby('order_index', 'ASC');
     }
+
+    public function parent()
+    {
+        return $this->belongsTo('\App\Categories', 'parent_id');
+    }
 }
