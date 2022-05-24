@@ -120,7 +120,7 @@ class LoginController extends Controller
             return redirect('/qr');
         }
         if (auth()->user()->hasRole('staff')) {
-            return redirect('/restaurant/'.Auth::User()->restaurant->subdomain);
+            return redirect('/categories');
         }
         if (auth()->user()->hasRole('admin')) {
             return redirect('/restaurants');
