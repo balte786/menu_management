@@ -26,6 +26,18 @@
                     @endif
                     <form method="post" action="{{ URL::to('/storeStaff') }}" autocomplete="off">
                         @csrf
+
+                        <h6 class="heading-small text-muted mb-4">{{ __('Restaurant information') }}</h6>
+                        <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
+                            <label class="form-control-label" for="address">Branch Name (Restuarant Name - Branch Name)</label>
+                            <input type="text" name="name" id="name" class="form-control form-control-alternative{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Restaurant branch Name Here') }} ..." value="" required autofocus>
+                            @if ($errors->has('name'))
+                                <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $errors->first('name') }}</strong>
+                                        </span>
+                            @endif
+                        </div>
+                        <hr />
                         <h6 class="heading-small text-muted mb-4">{{ __('Staff information') }}</h6>
                         <div class="pl-lg-4">
                             <div class="form-group{{ $errors->has('name_owner') ? ' has-danger' : '' }}">

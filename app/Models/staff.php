@@ -29,4 +29,5 @@ class staff extends Model
     use SoftDeletes;
 
     protected $table = "users";
+
 }

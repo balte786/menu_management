@@ -268,6 +268,7 @@ Route::post('/storeStaff', [App\Http\Controllers\staffController::class, 'store'
 Route::get('/delete-staff/{id}', [App\Http\Controllers\staffController::class, 'delete_staff']);
 Route::get('/edit-staff/{id}', [App\Http\Controllers\staffController::class, 'edit_staff']);
 Route::post('/change', [App\Http\Controllers\staffController::class, 'change']);
+Route::get('/login-branch/{id}', 'staffController@login_as_branch');
 
 
 //admin staff routes

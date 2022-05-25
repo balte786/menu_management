@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Restorant;
 use Session;
 
 class staffController extends Controller
@@ -17,20 +18,18 @@ class staffController extends Controller
     {
         if (auth()->user()->hasRole('owner')) {
 
-            $restaurant_id = Auth::user()->restaurant_id;
-
-            //echo $restaurant_id;
-            //exit;
-
-            $user_data = User::where('restaurant_id', $restaurant_id)->where('id', '!=', Auth::user()->id)->get();
-
-            //print_r($user_data);
-            //exit;
+            $user_data = User::where('owner_id', Auth::user()->id)->get();
             return view('staff.index', ['staffData' => $user_data]);
         } else {
             return redirect()->route('dashboard')->withStatus(__('No Access'));
         }
     }
+    public function login_as_branch($id)
+    {
+        Auth::loginUsingId($id);
+        return redirect('/categories');
+    }
+
 
     public function create()
     {
@@ -48,6 +47,7 @@ class staffController extends Controller
         if (auth()->user()->hasRole('owner')) {
 
             $request->validate([
+                'name' => ['required', 'string', 'unique:companies,name', 'max:255'],
                 'name_staff' => ['required', 'string', 'unique:companies,name', 'max:255'],
                 'email_staff' => ['required', 'string', 'email', 'unique:users,email,NULL,id,deleted_at,NULL', 'max:255'],
                 'password_staff' => ['required', 'string', 'max:255'],
@@ -57,12 +57,31 @@ class staffController extends Controller
             $staff = new User;
             $staff->name = strip_tags($request->name_staff);
             $staff->email = strip_tags($request->email_staff);
+            $staff->owner_id = Auth::user()->id;
             $staff->api_token = Str::random(80);
             $staff->password = Hash::make($request->password_staff);
-            $staff->restaurant_id = Auth::user()->restaurant->id;
             if ($staff->save()) {
                 $staff->assignRole('staff');
             }
+
+
+            $restaurant = new Restorant;
+            $restaurant->name = strip_tags($request->name);
+            $restaurant->user_id = $staff->id;
+            $restaurant->description = strip_tags($request->description.'');
+            $restaurant->minimum = $request->minimum | 0;
+            $restaurant->lat = 0;
+            $restaurant->lng = 0;
+            $restaurant->address = '';
+            $restaurant->subdomain = $this->makeAlias(strip_tags($request->name));
+            $restaurant->save();
+
+            User::where('id', $staff->id)
+                ->update([
+                    'restaurant_id' => $restaurant->id
+                ]);
+
+
             return redirect('/staff')->with('status', 'You have successfully created a staff');
         } else {
             return redirect()->route('dashboard')->withStatus(__('No Access'));

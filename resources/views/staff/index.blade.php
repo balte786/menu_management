@@ -39,9 +39,10 @@
                     <table class="table align-items-center table-flush">
                         <thead class="thead-light">
                             <tr>
-                                <th scope="col">{{ __('Name') }}</th>
+                                <th scope="col">Branch Name</th>
+                                <th scope="col">{{ __('Staff Name') }}</th>
 
-                                <th scope="col">{{ __('Email') }}</th>
+                                <th scope="col">{{ __('Staff Email') }}</th>
                                 <th scope="col">{{ __('Creation Date') }}</th>
                                 <th scope="col">{{ __('Update Date') }}</th>
                                 <th colspan="2" style="text-align: center;">{{ __('Action') }}</th>
@@ -52,12 +53,15 @@
                             @foreach ($staffData as $staff)
 
                             <tr>
+                                <td><a href=" #">{{ $staff->restorant->name }}</a></td>
                                 <td><a href=" #">{{ $staff->name }}</a></td>
                                 <td>{{ $staff->email }}</td>
                                 <td>{{ $staff->created_at->format('m/d/y h:m:A') }}</td>
                                 <td>{{ $staff->	updated_at->format('m/d/y h:m:A') }}</td>
-                                <td><a href="{{URL::to('/delete-staff/'.$staff->id)}}"><button type="button" class="btn btn-danger btn-sm">Delete</button></a></td>
-                                <td><a href="{{URL::to('/edit-staff/'.$staff->id)}}"><button type="button" class="btn btn-danger btn-sm">Edit</button></a></td>
+                                <td><a href="{{URL::to('/delete-staff/'.$staff->id)}}"><button type="button" class="btn btn-danger btn-sm">Delete</button></a>|
+                                <a href="{{URL::to('/edit-staff/'.$staff->id)}}"><button type="button" class="btn btn-danger btn-sm">Edit</button></a>|
+                                    <a href="{{URL::to('/login-branch/'.$staff->id)}}"><button type="button" class="btn btn-primary btn-sm">Login this branch</button></a>
+                                </td>
 
 
                             </tr>
