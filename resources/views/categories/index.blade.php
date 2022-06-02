@@ -102,11 +102,11 @@
                                     </a>
                                     @if($category->active==1)
                                     <a href="{{ url('categories/active-category/'.$category->id.'/'.$category->active) }}">
-                                        <button type="submit" class="btn btn-sm ml-1 btn-success">InActive</button>
+                                        <button type="submit" class="btn btn-sm ml-1 btn-warning">Deactive</button>
                                     </a>
                                     @else
                                     <a href="{{ url('categories/active-category/'.$category->id.'/'.$category->active) }}">
-                                        <button type="submit" class="btn btn-sm ml-1 btn-success">Active</button>
+                                        <button type="submit" class="btn btn-sm ml-1 btn-success">Activate</button>
                                     </a>
                                     @endif
 
@@ -130,11 +130,11 @@
 
                                             @if($child->active==1)
                                             <a href="{{ url('categories/active-category/'.$child->id.'/'.$child->active) }}">
-                                                <button type="submit" class="btn btn-sm ml-1 btn-success">InActive</button>
+                                                <button type="submit" class="btn btn-sm ml-1 btn-warning">Deactive</button>
                                             </a>
                                             @else
                                             <a href="{{ url('categories/active-category/'.$child->id.'/'.$child->active) }}">
-                                                <button type="submit" class="btn btn-sm ml-1 btn-success">Active</button>
+                                                <button type="submit" class="btn btn-sm ml-1 btn-success">Activatepe</button>
                                             </a>
                                             @endif
 
