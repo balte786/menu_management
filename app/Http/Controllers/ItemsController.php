@@ -169,7 +169,7 @@ class ItemsController extends Controller
         }
         $item->save();
 
-        return redirect()->route('items.index')->withStatus(__('Item successfully updated.'));
+        return redirect()->route('items.index')->withStatus(__('Item successfully added.'));
     }
 
     /**
@@ -204,7 +204,7 @@ class ItemsController extends Controller
             }
 
 
-
+            $categories =   Categories::where('parent_id', '!=', 0)->where('restorant_id', auth()->user()->restorant->id)->pluck('name', 'id');
 
             return view(
                 'items.edit',
@@ -214,7 +214,7 @@ class ItemsController extends Controller
                     'item' => $item,
                     'setup' => ['items' => $item->uservariants()->paginate(1000)],
                     'restorant' => $item->category->restorant,
-                    'categories' => $item->category->restorant->categories->pluck('name', 'id'),
+                    'categories' => $categories,
                     'restorant_id' => $item->category->restorant->id,
                 ]
             );
@@ -232,6 +232,7 @@ class ItemsController extends Controller
      */
     public function update(Request $request, Items $item)
     {
+        // dd($item);
         $makeVariantsRecreate = false;
         $item->name = strip_tags($request->item_name);
         $item->description = strip_tags($request->item_description);
@@ -281,6 +282,7 @@ class ItemsController extends Controller
             }
         }
 
+
         if ($request->hasFile('item_image')) {
             if ($request->hasFile('item_image')) {
                 $item->image = $this->saveImageVersions(
@@ -295,10 +297,11 @@ class ItemsController extends Controller
                 );
             }
         }
+        // dd($item);
 
         $item->update();
 
-        return redirect()->route('items.edit', $item)->withStatus(__('Item successfully updated.'));
+        return redirect()->route('items.index', $item->id)->withStatus(__('Item successfully updated.'));
     }
 
     /**

@@ -104,11 +104,11 @@
     @endif
 
     @if(config('settings.enable_pricing'))
-    <li class="nav-item" {{config('settings.enable_pricing')}}>
+   {{-- <li class="nav-item" {{config('settings.enable_pricing')}}>
         <a class="nav-link" href="{{ route('plans.current') }}">
             <i class="ni ni-credit-card text-orange"></i> {{ __('Plan') }}
         </a>
-    </li>
+    </li>--}}
     @endif
     <!--
     @if(config('app.ordering')&&config('settings.enable_finances_owner'))
@@ -123,11 +123,11 @@
 
     @if ( in_array("coupons", config('global.modules',[])) )
 
-    <li class="nav-item">
+    {{--<li class="nav-item">
         <a class="nav-link" href="{{ route('admin.restaurant.coupons.index') }}">
             <i class="ni ni-tag text-pink"></i> {{ __('Coupons') }}
         </a>
-    </li>
+    </li>--}}
     @endif
 
     <!--
