@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use App\Restorant;
 use Session;
 
+
 class staffController extends Controller
 {
     public function index()
@@ -90,8 +91,11 @@ class staffController extends Controller
 
     public function delete_staff($id)
     {
-
-        $user_data = User::where('id', $id)->delete();
+        DB::table('users')
+            ->where('id', $id)  // find your user by their email
+            ->limit(1)  // optional - to ensure only one record is updated.
+            ->update(array('deleted_at' => date('Y-m-d H:i:s')));
+        
         return redirect('/staff')->with('status', 'Staff removed successfully');
     }
 
