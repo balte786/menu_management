@@ -228,6 +228,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('categories/update-category/{id}', 'CategoriesController@update_category');
     Route::get('categories/destroy-category/{id}', 'CategoriesController@destroy_category');
     Route::get('categories/active-category/{id}/{active}', 'CategoriesController@active_category');
+    Route::get('categories/category-sorting/{sort}/{id}/{order_index}', 'CategoriesController@category_sorting');
+    Route::get('categories/childsorting/{sort}/{parent_id}/{child_id}/{order_index}', 'CategoriesController@category_childsorting');
 
 
     Route::resource('addresses', 'AddressControler');

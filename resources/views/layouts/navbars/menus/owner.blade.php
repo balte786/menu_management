@@ -26,7 +26,7 @@
 
     <li class="nav-item">
         <a class="nav-link" href="{{ route('admin.restaurants.edit',  auth()->user()->restorant->id) }}">
-            <i class="ni ni-shop text-info"></i> {{ __('Restaurant') }}
+            <i class="ni ni-shop text-info"></i> Brands
         </a>
     </li>
     <li class="nav-item">
@@ -41,7 +41,7 @@
     </li>
     <li class="nav-item">
         <a class="nav-link" href="/staff">
-            <i class="ni ni-collection text-pink"></i> {{ __('Staff') }}
+            <i class="ni ni-collection text-pink"></i> Restaurants
         </a>
     </li>
     <li class="nav-item">
