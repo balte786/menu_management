@@ -100,6 +100,7 @@
                                     <a class="button delete-confirm" href="{{ url('categories/destroy-category',$category->id) }}">
                                         <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                     </a>
+
                                     @if($category->active==1)
                                     <a href="{{ url('categories/active-category/'.$category->id.'/'.$category->active) }}">
                                         <button type="submit" class="btn btn-sm ml-1 btn-warning">Deactive</button>
@@ -110,9 +111,19 @@
                                     </a>
                                     @endif
 
+                                    @if($categories->count()>1)
+                                        @if ($loop->iteration!= 1)
+                                        <a href="{{ url('categories/category-sorting/sorting-up/'.$category->id.'/'.$category->order_index) }}"><i style="font-size: 20px;margin-left: 5px;color: green;" class="fa fa-arrow-up" aria-hidden="true"></i></a>
+                                        @endif
+                                        @if ($loop->iteration!= $categories->count())
+                                        <a href="{{ url('categories/category-sorting/sorting-down/'.$category->id.'/'.$category->order_index) }}"><i style="font-size: 20px;margin-left: 5px;color: green;" class="fa fa-arrow-down" aria-hidden="true"></i></a>
+                                        @endif
+                                    @endif
 
                                 </div>
                             </div>
+
+
 
                             @if ($category->children)
                             <ul class="list-group mt-2">
@@ -136,6 +147,15 @@
                                             <a href="{{ url('categories/active-category/'.$child->id.'/'.$child->active) }}">
                                                 <button type="submit" class="btn btn-sm ml-1 btn-success">Activatepe</button>
                                             </a>
+                                            @endif
+
+                                            @if($category->children->count()>1)
+                                                @if ($loop->iteration!= 1)
+                                                    <a href="{{ url('categories/childsorting/sorting-up/'.$child->parent_id.'/'.$child->id.'/'.$child->order_index) }}"> <i style="font-size: 20px;margin-left: 5px;color: green;" class="fa fa-arrow-up" aria-hidden="true"></i></a>
+                                                @endif
+                                                @if ($loop->iteration!= $category->children->count())
+                                                        <a href="{{ url('categories/childsorting/sorting-down/'.$child->parent_id.'/'.$child->id.'/'.$child->order_index) }}"><i style="font-size: 20px;margin-left: 5px;color: green;" class="fa fa-arrow-down" aria-hidden="true"></i></a>
+                                                @endif
                                             @endif
 
                                         </div>
