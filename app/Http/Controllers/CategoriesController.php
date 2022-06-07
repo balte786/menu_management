@@ -20,7 +20,7 @@ class CategoriesController extends Controller
         $categories = Categories::with('children')
             ->where('parent_id', 0)
             ->where('restorant_id', auth()->user()->restorant->id)
-            ->orderBy('order_index','ASC')
+            ->orderBy('order_index', 'ASC')
             ->get();
 
         return view('categories.index')->with([
@@ -28,12 +28,13 @@ class CategoriesController extends Controller
         ]);
     }
 
-    public function category_sorting($sorting, $cat_id,$order_index){
-        if($sorting=='sorting-up'){
+    public function category_sorting($sorting, $cat_id, $order_index)
+    {
+        if ($sorting == 'sorting-up') {
             $categories = Categories::where('parent_id', 0)
                 ->where('restorant_id', auth()->user()->restorant->id)
-                ->where('order_index','<',$order_index)
-                ->orderby('order_index','DESC')
+                ->where('order_index', '<', $order_index)
+                ->orderby('order_index', 'DESC')
                 ->limit(1)
                 ->first();
             $category_change   =   Categories::find($cat_id);
@@ -43,16 +44,15 @@ class CategoriesController extends Controller
             $category_previous   =   Categories::find($categories->id);
             $category_previous->order_index = $order_index;
             $category_previous->save();
-
         }
-        if($sorting=='sorting-down'){
+        if ($sorting == 'sorting-down') {
             $categories = Categories::where('parent_id', 0)
                 ->where('restorant_id', auth()->user()->restorant->id)
-                ->where('order_index','>',$order_index)
-                ->orderby('order_index','ASC')
+                ->where('order_index', '>', $order_index)
+                ->orderby('order_index', 'ASC')
                 ->limit(1)
                 ->first();
-            if($categories){
+            if ($categories) {
                 $category_change   =   Categories::find($cat_id);
                 $category_change->order_index = $categories->order_index;
                 $category_change->save();
@@ -61,21 +61,18 @@ class CategoriesController extends Controller
                 $category_previous->order_index = $order_index;
                 $category_previous->save();
             }
-
-
         }
         return redirect()->route('categories.index')->withSuccess('You have successfully updated the order');
-
-
     }
 
-    public function category_childsorting($sorting,$parent_id,$child_id,$order_index){
+    public function category_childsorting($sorting, $parent_id, $child_id, $order_index)
+    {
 
-        if($sorting=='sorting-up'){
+        if ($sorting == 'sorting-up') {
             $categories = Categories::where('parent_id', $parent_id)
                 ->where('restorant_id', auth()->user()->restorant->id)
-                ->where('order_index','<',$order_index)
-                ->orderby('order_index','DESC')
+                ->where('order_index', '<', $order_index)
+                ->orderby('order_index', 'DESC')
                 ->limit(1)
                 ->first();
 
@@ -86,16 +83,15 @@ class CategoriesController extends Controller
             $category_previous   =   Categories::find($categories->id);
             $category_previous->order_index = $order_index;
             $category_previous->save();
-
         }
-        if($sorting=='sorting-down'){
+        if ($sorting == 'sorting-down') {
             $categories = Categories::where('parent_id', $parent_id)
                 ->where('restorant_id', auth()->user()->restorant->id)
-                ->where('order_index','>',$order_index)
-                ->orderby('order_index','ASC')
+                ->where('order_index', '>', $order_index)
+                ->orderby('order_index', 'ASC')
                 ->limit(1)
                 ->first();
-            if($categories){
+            if ($categories) {
                 $category_change   =   Categories::find($child_id);
                 $category_change->order_index = $categories->order_index;
                 $category_change->save();
@@ -104,12 +100,9 @@ class CategoriesController extends Controller
                 $category_previous->order_index = $order_index;
                 $category_previous->save();
             }
-
-
         }
 
         return redirect()->route('categories.index')->withSuccess('You have successfully updated the order');
-
     }
 
     public function store_category(Request $request)
@@ -125,29 +118,29 @@ class CategoriesController extends Controller
         $category->restorant_id = $request->restorant_id;
         $category->parent_id = $request->parent_id;
 
-        if($request->parent_id==0){
+        if ($request->parent_id == 0) {
 
             $categories = Categories::where('parent_id', 0)
                 ->where('restorant_id', auth()->user()->restorant->id)
-                ->orderby('order_index','DESC')
+                ->orderby('order_index', 'DESC')
                 ->limit(1)
                 ->first();
-            $category->order_index = $categories->order_index+1;
-
-        }else{
-            $categories = Categories::where('parent_id',$request->parent_id)
-                ->where('restorant_id', auth()->user()->restorant->id)
-                ->orderby('order_index','DESC')
-                ->limit(1)
-                ->first();
-            if($categories){
-                $category->order_index = $categories->order_index+1;
-            }else{
+            if ($categories) {
+                $category->order_index = $categories->order_index + 1;
+            } else {
                 $category->order_index = 1;
             }
-
-
-
+        } else {
+            $categories = Categories::where('parent_id', $request->parent_id)
+                ->where('restorant_id', auth()->user()->restorant->id)
+                ->orderby('order_index', 'DESC')
+                ->limit(1)
+                ->first();
+            if ($categories) {
+                $category->order_index = $categories->order_index + 1;
+            } else {
+                $category->order_index = 1;
+            }
         }
         if ($request->hasFile('cat_img')) {
             $file = $request->file('cat_img');

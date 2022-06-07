@@ -40,7 +40,7 @@ class RestorantController extends Controller
 {
     use Fields;
     use Modules;
-    
+
     protected $imagePath = 'uploads/restorants/';
 
     /**
@@ -59,6 +59,10 @@ class RestorantController extends Controller
     public function index(Restorant $restaurants)
     {
         if (auth()->user()->hasRole('admin')) {
+            if (request('term')) {
+                $restaurants = Restorant::query();
+                $restaurants->where('name', 'Like', '%' . request('term') . '%');
+            }
             return view('restorants.index', ['restorants' => $restaurants->orderBy('id', 'desc')->paginate(10)]);
         } else {
             return redirect()->route('orders.index')->withStatus(__('No Access'));
@@ -86,8 +90,8 @@ class RestorantController extends Controller
     {
 
         if (auth()->user()->hasRole('admin')) {
-            $title=Module::has('cloner')&&isset($_GET['cloneWith'])?__('Clone Restaurant')." ".(Restorant::findOrFail($_GET['cloneWith'])->name):__('Add Restaurant');
-            return view('restorants.create',['title'=>$title]);
+            $title = Module::has('cloner') && isset($_GET['cloneWith']) ? __('Clone Restaurant') . " " . (Restorant::findOrFail($_GET['cloneWith'])->name) : __('Add Restaurant');
+            return view('restorants.create', ['title' => $title]);
         } else {
             return redirect()->route('orders.index')->withStatus(__('No Access'));
         }
@@ -129,7 +133,7 @@ class RestorantController extends Controller
         $restaurant = new Restorant;
         $restaurant->name = strip_tags($request->name);
         $restaurant->user_id = $owner->id;
-        $restaurant->description = strip_tags($request->description.'');
+        $restaurant->description = strip_tags($request->description . '');
         $restaurant->minimum = $request->minimum | 0;
         $restaurant->lat = 0;
         $restaurant->lng = 0;
@@ -146,30 +150,30 @@ class RestorantController extends Controller
 
 
 
-       //default hours
-       if(!$request->has('cloneWith')){
-        $hours = new Hours();
-        $hours->restorant_id = $restaurant->id;
+        //default hours
+        if (!$request->has('cloneWith')) {
+            $hours = new Hours();
+            $hours->restorant_id = $restaurant->id;
 
-        $shift="_shift".$request->shift_id;
-        
-        $hours->{'0_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
-        $hours->{'0_to'} = config('settings.time_format') == "AM/PM" ? "5:00 PM" : "17:00";
-        $hours->{'1_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
-        $hours->{'1_to'} = config('settings.time_format') == "AM/PM" ? "5:00 PM" : "17:00";
-        $hours->{'2_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
-        $hours->{'2_to'} = config('settings.time_format') == "AM/PM" ? "5:00 PM" : "17:00";
-        $hours->{'3_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
-        $hours->{'3_to'} = config('settings.time_format') == "AM/PM" ? "5:00 PM" : "17:00";
-        $hours->{'4_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
-        $hours->{'4_to'} = config('settings.time_format') == "AM/PM" ? "5:00 PM" : "17:00";
-        $hours->{'5_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
-        $hours->{'5_to'} = config('settings.time_format') == "AM/PM" ? "5:00 PM" : "17:00";
-        $hours->{'6_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
-        $hours->{'6_to'} = config('settings.time_format') == "AM/PM" ? "5:00 PM" : "17:00";
-        
-        $hours->save();
-       }
+            $shift = "_shift" . $request->shift_id;
+
+            $hours->{'0_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
+            $hours->{'0_to'} = config('settings.time_format') == "AM/PM" ? "5:00 PM" : "17:00";
+            $hours->{'1_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
+            $hours->{'1_to'} = config('settings.time_format') == "AM/PM" ? "5:00 PM" : "17:00";
+            $hours->{'2_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
+            $hours->{'2_to'} = config('settings.time_format') == "AM/PM" ? "5:00 PM" : "17:00";
+            $hours->{'3_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
+            $hours->{'3_to'} = config('settings.time_format') == "AM/PM" ? "5:00 PM" : "17:00";
+            $hours->{'4_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
+            $hours->{'4_to'} = config('settings.time_format') == "AM/PM" ? "5:00 PM" : "17:00";
+            $hours->{'5_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
+            $hours->{'5_to'} = config('settings.time_format') == "AM/PM" ? "5:00 PM" : "17:00";
+            $hours->{'6_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
+            $hours->{'6_to'} = config('settings.time_format') == "AM/PM" ? "5:00 PM" : "17:00";
+
+            $hours->save();
+        }
 
         $restaurant->setConfig('disable_callwaiter', 0);
         $restaurant->setConfig('disable_ordering', 0);
@@ -178,13 +182,11 @@ class RestorantController extends Controller
         //Send email to the user/owner
         $owner->notify(new RestaurantCreated($generatedPassword, $restaurant, $owner));
 
-        if($request->has('cloneWith')){
-            return redirect()->route('cloner.index',['newid'=>$restaurant->id,'oldid'=>$request->cloneWith]);
-        }else{
+        if ($request->has('cloneWith')) {
+            return redirect()->route('cloner.index', ['newid' => $restaurant->id, 'oldid' => $request->cloneWith]);
+        } else {
             return redirect()->route('admin.restaurants.index')->withStatus(__('Restaurant successfully created.'));
         }
-
-        
     }
 
     /**
@@ -199,13 +201,14 @@ class RestorantController extends Controller
     }
 
 
-    public function addnewshift(Restorant $restaurant){
+    public function addnewshift(Restorant $restaurant)
+    {
         if (auth()->user()->id == $restaurant->user_id || auth()->user()->hasRole('admin')) {
             $hours = new Hours();
             $hours->restorant_id = $restaurant->id;
             $hours->save();
             return redirect()->route('admin.restaurants.edit', ['restaurant' => $restaurant->id])->withStatus(__('New shift added!'));
-        }else{
+        } else {
             abort(404);
         }
     }
@@ -492,7 +495,7 @@ class RestorantController extends Controller
      */
     public function destroy(Restorant $restaurant)
     {
-        if (! auth()->user()->hasRole('admin')) {
+        if (!auth()->user()->hasRole('admin')) {
             dd('Not allowed');
         }
 
@@ -504,7 +507,7 @@ class RestorantController extends Controller
 
     public function remove(Restorant $restaurant)
     {
-        if (! auth()->user()->hasRole('admin')) {
+        if (!auth()->user()->hasRole('admin')) {
             dd('Not allowed');
         }
 
@@ -529,7 +532,7 @@ class RestorantController extends Controller
 
         $geoResults = $geocoder->getCoordinatesForAddress($request->address);
 
-        $data = ['status'=>true, 'results'=>$geoResults];
+        $data = ['status' => true, 'results' => $geoResults];
 
         return response()->json($data);
     }
@@ -590,14 +593,14 @@ class RestorantController extends Controller
         return redirect()->route('admin.restaurants.index')->withStatus(__('Restaurant successfully imported.'));
     }
 
-    public function workingHoursremove(Hours $hours){
+    public function workingHoursremove(Hours $hours)
+    {
         if (!auth()->user()->hasRole('admin')) {
-            if (auth()->user()->hasRole('owner')&&$hours->restorant->user->id==auth()->user()->id) {
+            if (auth()->user()->hasRole('owner') && $hours->restorant->user->id == auth()->user()->id) {
                 //ok, owner
-            }else{
+            } else {
                 abort(404);
             }
-           
         }
 
 
@@ -609,22 +612,22 @@ class RestorantController extends Controller
     {
         $hours = Hours::where(['id' => $request->shift_id])->first();
 
-        $shift="_shift".$request->shift_id;
-        
-        $hours->{'0_from'} = $request->{'0_from'.$shift} ?? null;
-        $hours->{'0_to'} = $request->{'0_to'.$shift} ?? null;
-        $hours->{'1_from'} = $request->{'1_from'.$shift} ?? null;
-        $hours->{'1_to'} = $request->{'1_to'.$shift} ?? null;
-        $hours->{'2_from'} = $request->{'2_from'.$shift} ?? null;
-        $hours->{'2_to'} = $request->{'2_to'.$shift} ?? null;
-        $hours->{'3_from'} = $request->{'3_from'.$shift} ?? null;
-        $hours->{'3_to'} = $request->{'3_to'.$shift} ?? null;
-        $hours->{'4_from'} = $request->{'4_from'.$shift} ?? null;
-        $hours->{'4_to'} = $request->{'4_to'.$shift} ?? null;
-        $hours->{'5_from'} = $request->{'5_from'.$shift} ?? null;
-        $hours->{'5_to'} = $request->{'5_to'.$shift} ?? null;
-        $hours->{'6_from'} = $request->{'6_from'.$shift} ?? null;
-        $hours->{'6_to'} = $request->{'6_to'.$shift} ?? null;
+        $shift = "_shift" . $request->shift_id;
+
+        $hours->{'0_from'} = $request->{'0_from' . $shift} ?? null;
+        $hours->{'0_to'} = $request->{'0_to' . $shift} ?? null;
+        $hours->{'1_from'} = $request->{'1_from' . $shift} ?? null;
+        $hours->{'1_to'} = $request->{'1_to' . $shift} ?? null;
+        $hours->{'2_from'} = $request->{'2_from' . $shift} ?? null;
+        $hours->{'2_to'} = $request->{'2_to' . $shift} ?? null;
+        $hours->{'3_from'} = $request->{'3_from' . $shift} ?? null;
+        $hours->{'3_to'} = $request->{'3_to' . $shift} ?? null;
+        $hours->{'4_from'} = $request->{'4_from' . $shift} ?? null;
+        $hours->{'4_to'} = $request->{'4_to' . $shift} ?? null;
+        $hours->{'5_from'} = $request->{'5_from' . $shift} ?? null;
+        $hours->{'5_to'} = $request->{'5_to' . $shift} ?? null;
+        $hours->{'6_from'} = $request->{'6_from' . $shift} ?? null;
+        $hours->{'6_to'} = $request->{'6_to' . $shift} ?? null;
         $hours->update();
 
         return redirect()->route('admin.restaurants.edit', ['restaurant' => $request->rid])->withStatus(__('Working hours successfully updated!'));
@@ -672,10 +675,10 @@ class RestorantController extends Controller
         $restaurant = new Restorant;
         $restaurant->name = strip_tags($request->name);
         $restaurant->user_id = $owner->id;
-        $restaurant->description = strip_tags($request->description.'');
+        $restaurant->description = strip_tags($request->description . '');
         $restaurant->minimum = $request->minimum | 0;
-        $restaurant->lat = config('settings.default_lat',0);
-        $restaurant->lng = config('settings.default_lng',0);
+        $restaurant->lat = config('settings.default_lat', 0);
+        $restaurant->lng = config('settings.default_lng', 0);
         $restaurant->address = '';
         $restaurant->phone = $owner->phone;
         $restaurant->active = 0;
@@ -686,8 +689,8 @@ class RestorantController extends Controller
         $hours = new Hours();
         $hours->restorant_id = $restaurant->id;
 
-        $shift="_shift".$request->shift_id;
-        
+        $shift = "_shift" . $request->shift_id;
+
         $hours->{'0_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
         $hours->{'0_to'} = config('settings.time_format') == "AM/PM" ? "5:00 AM" : "17:00";
         $hours->{'1_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
@@ -702,7 +705,7 @@ class RestorantController extends Controller
         $hours->{'5_to'} = config('settings.time_format') == "AM/PM" ? "5:00 AM" : "17:00";
         $hours->{'6_from'} = config('settings.time_format') == "AM/PM" ? "9:00 AM" : "09:00";
         $hours->{'6_to'} = config('settings.time_format') == "AM/PM" ? "5:00 AM" : "17:00";
-        
+
         $hours->save();
 
         $restaurant->setConfig('disable_callwaiter', 0);
@@ -713,14 +716,12 @@ class RestorantController extends Controller
             $this->makeRestaurantActive($restaurant);
 
             //We can have a usecase when lading id disabled
-            if(config('settings.disable_landing')){
+            if (config('settings.disable_landing')) {
                 return redirect('/login')->withStatus(__('notifications_thanks_andcheckemail'));
-            }else{
+            } else {
                 //Normal, go to landing
                 return redirect()->route('front')->withStatus(__('notifications_thanks_andcheckemail'));
             }
-
-            
         } else {
             //Foodtiger
             return redirect()->route('newrestaurant.register')->withStatus(__('notifications_thanks_and_review'));
@@ -759,12 +760,12 @@ class RestorantController extends Controller
 
     public function restaurantslocations()
     {
-        if (! auth()->user()->hasRole('admin')) {
-            abort(404,'Not allowed');
+        if (!auth()->user()->hasRole('admin')) {
+            abort(404, 'Not allowed');
         }
 
         $toRespond = [
-            'restaurants'=> Restorant::where('active', 1)->get(),
+            'restaurants' => Restorant::where('active', 1)->get(),
         ];
 
         return response()->json($toRespond);
@@ -804,12 +805,12 @@ class RestorantController extends Controller
         $this->authChecker();
 
         if (config('settings.wildcard_domain_ready')) {
-            $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 'https://' : 'http://').auth()->user()->restorant->subdomain.'.'.str_replace('www.', '', $_SERVER['HTTP_HOST']);
+            $url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 'https://' : 'http://') . auth()->user()->restorant->subdomain . '.' . str_replace('www.', '', $_SERVER['HTTP_HOST']);
         } else {
             $url = route('vendor', auth()->user()->restorant->subdomain);
         }
 
-        return view('restorants.share', ['url' => $url, 'name'=>auth()->user()->restorant->name]);
+        return view('restorants.share', ['url' => $url, 'name' => auth()->user()->restorant->name]);
     }
 
     public function downloadQR()
@@ -817,31 +818,29 @@ class RestorantController extends Controller
         $this->authChecker();
 
         if (config('settings.wildcard_domain_ready')) {
-            $vendorURL = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 'https://' : 'http://').auth()->user()->restorant->subdomain.'.'.str_replace('www.', '', $_SERVER['HTTP_HOST']);
+            $vendorURL = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] ? 'https://' : 'http://') . auth()->user()->restorant->subdomain . '.' . str_replace('www.', '', $_SERVER['HTTP_HOST']);
         } else {
             $vendorURL = route('vendor', auth()->user()->restorant->subdomain);
         }
 
         $filename = 'qr.png';
 
-        if(isset($_GET['table_id'])){
-            $theTable=Tables::where('id',$_GET['table_id'])->first();
-            if($theTable&&$theTable->restaurant_id==auth()->user()->restorant->id){
-                $tn=$theTable->restoarea ? $theTable->restoarea->name.''.$theTable->name : $theTable->name;
-                $filename=Str::slug($tn, '_').".png";
-                $vendorURL.="?tid=".$_GET['table_id'];
+        if (isset($_GET['table_id'])) {
+            $theTable = Tables::where('id', $_GET['table_id'])->first();
+            if ($theTable && $theTable->restaurant_id == auth()->user()->restorant->id) {
+                $tn = $theTable->restoarea ? $theTable->restoarea->name . '' . $theTable->name : $theTable->name;
+                $filename = Str::slug($tn, '_') . ".png";
+                $vendorURL .= "?tid=" . $_GET['table_id'];
             }
-            
-            
         }
-        
-        $url = 'https://api.qrserver.com/v1/create-qr-code/?size=512x512&format=png&data='.$vendorURL;
+
+        $url = 'https://api.qrserver.com/v1/create-qr-code/?size=512x512&format=png&data=' . $vendorURL;
         //
-       
+
         $tempImage = tempnam(sys_get_temp_dir(), $filename);
         @copy($url, $tempImage);
 
-        return response()->download($tempImage, $filename,array('Content-Type:image/png'));
+        return response()->download($tempImage, $filename, array('Content-Type:image/png'));
     }
 
     /**
@@ -864,11 +863,13 @@ class RestorantController extends Controller
         $newEnvLanguage = isset(config('config.env')[2]['fields'][0]['data'][$newLocale]) ? config('config.env')[2]['fields'][0]['data'][$newLocale] : 'UNKNOWN';
 
         //Create new language
-        $localMenu = new LocalMenu([
-            'restaurant_id'=>$request->restaurant_id,
-             'language'=>$newLocale,
-              'languageName'=>$newEnvLanguage,
-              'default'=>'0', ]
+        $localMenu = new LocalMenu(
+            [
+                'restaurant_id' => $request->restaurant_id,
+                'language' => $newLocale,
+                'languageName' => $newEnvLanguage,
+                'default' => '0',
+            ]
         );
         $localMenu->save();
 
@@ -890,7 +891,7 @@ class RestorantController extends Controller
         //3. Change locale to the new local
         app()->setLocale($newLocale);
         session(['applocale_change' => $newLocale]);
-      
+
 
         //5. Redirect
         return redirect()->route('items.index')->withStatus(__('New language successfully created.'));
