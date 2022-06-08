@@ -21,6 +21,8 @@ class staffController extends Controller
 
             $user_data = User::where('owner_id', Auth::user()->id)->get();
             return view('staff.index', ['staffData' => $user_data]);
+        }elseif(auth()->user()->hasRole('staff')){
+             return redirect('/categories');
         } else {
             return redirect()->route('dashboard')->withStatus(__('No Access'));
         }
