@@ -161,12 +161,24 @@
         @yield('js')
 
         <script src="{{ asset('custom') }}/js/rmap.js"></script>
+        <script>
+            window.addEventListener( "pageshow", function ( event ) {
+                var historyTraversal = event.persisted ||
+                    ( typeof window.performance != "undefined" &&
+                    window.performance.navigation.type === 2 );
+                if ( historyTraversal ) {
+                    // Handle page restore.
+                    window.location.reload();
+                }
+            });
+        </script>
 
          <!-- Pusher -->
          @if(strlen( config('broadcasting.connections.pusher.app_id'))>2)
             <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
             <script src="{{ asset('custom') }}/js/pusher.js"></script>
         @endif
+
 
         <!-- Custom JS defined by admin -->
         <?php echo file_get_contents(base_path('public/byadmin/back.js')) ?>
