@@ -6,10 +6,10 @@
             <div class="col-md-6">
                 <input type="hidden" id="rid" value="{{ $restorant->id }}" />
                 @include('partials.fields',['fields'=>[
-                ['ftype'=>'input','name'=>"Brand Name",'id'=>"name",'placeholder'=>"Brand Name",'required'=>true,'value'=>$restorant->name],
-                ['ftype'=>'input','name'=>"Brand description",'id'=>"description",'placeholder'=>"Brand description",'required'=>true,'value'=>$restorant->description],
-                ['ftype'=>'input','name'=>"Brand address",'id'=>"address",'placeholder'=>"Brand address",'required'=>true,'value'=>$restorant->address],
-                ['ftype'=>'input','name'=>"Brand phone",'id'=>"phone",'placeholder'=>"Brand phone",'required'=>true,'value'=>$restorant->phone],
+                ['ftype'=>'input','name'=>"Restaurant Name",'id'=>"name",'placeholder'=>"Restaurant Name",'required'=>true,'value'=>$restorant->name],
+                ['ftype'=>'input','name'=>"Restaurant description",'id'=>"description",'placeholder'=>"Restaurant description",'required'=>true,'value'=>$restorant->description],
+                ['ftype'=>'input','name'=>"Restaurant address",'id'=>"address",'placeholder'=>"Restaurant address",'required'=>true,'value'=>$restorant->address],
+                ['ftype'=>'input','name'=>"Restaurant phone",'id'=>"phone",'placeholder'=>"Restaurant phone",'required'=>true,'value'=>$restorant->phone],
 
                 ]])
                 @if(config('settings.multi_city'))
@@ -93,10 +93,10 @@
                 <div class="row">
                     <?php
                     $images = [
-                        ['name' => 'resto_wide_logo', 'label' => __('Brand wide logo'), 'value' => $restorant->logowide, 'style' => 'width: 200px; height: 62px;', 'help' => "PNG 650x120 recomended"],
-                        ['name' => 'resto_wide_logo_dark', 'label' => __('Dark Brand wide logo'), 'value' => $restorant->logowidedark, 'style' => 'width: 200px; height: 62px;', 'help' => "PNG 650x120 recomended"],
-                        ['name' => 'resto_logo', 'label' => __('Brand Image'), 'value' => $restorant->logom, 'style' => 'width: 295px; height: 200px;', 'help' => "JPEG 590 x 400 recomended"],
-                        ['name' => 'resto_cover', 'label' => __('Brand Cover Image'), 'value' => $restorant->coverm, 'style' => 'width: 200px; height: 100px;', 'help' => "JPEG 2000 x 1000 recomended"]
+                        ['name' => 'resto_wide_logo', 'label' => __('Restaurant wide logo'), 'value' => $restorant->logowide, 'style' => 'width: 200px; height: 62px;', 'help' => "PNG 650x120 recomended"],
+                        ['name' => 'resto_wide_logo_dark', 'label' => __('Dark Restaurant wide logo'), 'value' => $restorant->logowidedark, 'style' => 'width: 200px; height: 62px;', 'help' => "PNG 650x120 recomended"],
+                        ['name' => 'resto_logo', 'label' => __('Restaurant Image'), 'value' => $restorant->logom, 'style' => 'width: 295px; height: 200px;', 'help' => "JPEG 590 x 400 recomended"],
+                        ['name' => 'resto_cover', 'label' => __('Restaurant Cover Image'), 'value' => $restorant->coverm, 'style' => 'width: 200px; height: 100px;', 'help' => "JPEG 2000 x 1000 recomended"]
                     ]
                     ?>
                     @foreach ($images as $image)

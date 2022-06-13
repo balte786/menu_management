@@ -9,7 +9,7 @@
                 <div class="card-header bg-white border-0">
                     <div class="row align-items-center">
                         <div class="col-8">
-                            <h3 class="mb-0">Brand Management</h3>
+                            <h3 class="mb-0">Restaurant Management</h3>
                         </div>
                         <div class="col-4 text-right">
                             <a href="{{ URL::to('/staff') }}" class="btn btn-sm btn-primary">{{ __('Back to list') }}</a>
@@ -26,31 +26,31 @@
                     @endif
                     <form method="post" action="{{ URL::to('/change') }}" autocomplete="off">
                         @csrf
-                        <h6 class="heading-small text-muted mb-4">{{ __('Staff information') }}</h6>
+                        <h6 class="heading-small text-muted mb-4">{{ __('Restaurant information') }}</h6>
                         <div class="pl-lg-4">
                             <input type="hidden" name="id" value="{{$user_data->id}}">
                             <div class="form-group{{ $errors->has('name_owner') ? ' has-danger' : '' }}">
 
-                                <label class="form-control-label" for="name_owner">{{ __('Staff Name') }}</label>
-                                <input type="text" name="name_staff" id="name_staff" class="form-control form-control-alternative{{ $errors->has('name_staff') ? ' is-invalid' : '' }}" placeholder="{{ __('Staff Name here') }} ..." value="{{$user_data->name}}" required autofocus>
+                                <label class="form-control-label" for="name_owner">{{ __('Restaurant Owner Name') }}</label>
+                                <input type="text" name="name_staff" id="name_staff" class="form-control form-control-alternative{{ $errors->has('name_staff') ? ' is-invalid' : '' }}" placeholder="{{ __('Restaurant Owner Name here') }} ..." value="{{$user_data->name}}" required autofocus>
                                 @if ($errors->has('name_staff'))
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $errors->first('name_staff') }}</strong>
                                 </span>
                                 @endif
                             </div>
-                            <div class="form-group{{ $errors->has('email_owner') ? ' has-danger' : '' }}">
-                                <label class="form-control-label" for="email_owner">{{ __('Staff Email') }}</label>
-                                <input type="email" name="email_staff" id="email_staff" class="form-control form-control-alternative{{ $errors->has('email_staff') ? ' is-invalid' : '' }}" placeholder="{{ __('Staff Email here') }} ..." value="{{$user_data->email}}">
-                                @if ($errors->has('email_staff'))
+                            <div class="form-group{{ $errors->has('branch_name') ? ' has-danger' : '' }}">
+                                <label class="form-control-label" for="branch_name">{{ __('Restaurant Name') }}</label>
+                                <input type="text" name="branch_name" id="branch_name" class="form-control form-control-alternative{{ $errors->has('branch_name') ? ' is-invalid' : '' }}" placeholder="{{ __('Restaurant Name here') }} ..." value="{{$restorant->name}}">
+                                @if ($errors->has('branch_name'))
                                 <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $errors->first('email_staff') }}</strong>
+                                    <strong>{{ $errors->first('branch_name') }}</strong>
                                 </span>
                                 @endif
                             </div>
                             <div class="form-group{{ $errors->has('password_staff') ? ' has-danger' : '' }}">
-                                <label class="form-control-label" for="password_staff">{{ __('Staff Password') }}</label>
-                                <input type="password" name="password_staff" id="password_staff" class="form-control form-control-alternative{{ $errors->has('password_staff') ? ' is-invalid' : '' }}" placeholder="{{ __('Staff Password here') }} ..." value="">
+                                <label class="form-control-label" for="password_staff">{{ __('Restaurant Owner Password') }}</label>
+                                <input type="password" name="password_staff" id="password_staff" class="form-control form-control-alternative{{ $errors->has('password_staff') ? ' is-invalid' : '' }}" placeholder="{{ __('Restaurant Owner Password here') }} ..." value="$user_data->password">
                                 @if ($errors->has('password_staff'))
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $errors->first('password_staff') }}</strong>

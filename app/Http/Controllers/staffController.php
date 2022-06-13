@@ -21,8 +21,8 @@ class staffController extends Controller
 
             $user_data = User::where('owner_id', Auth::user()->id)->get();
             return view('staff.index', ['staffData' => $user_data]);
-        }elseif(auth()->user()->hasRole('staff')){
-             return redirect('/categories');
+        } elseif (auth()->user()->hasRole('staff')) {
+            return redirect('/categories');
         } else {
             return redirect()->route('dashboard')->withStatus(__('No Access'));
         }
@@ -53,7 +53,7 @@ class staffController extends Controller
                 'name' => ['required', 'string', 'unique:companies,name', 'max:255'],
                 'name_staff' => ['required', 'string', 'unique:companies,name', 'max:255'],
                 'email_staff' => ['required', 'string', 'email', 'unique:users,email,NULL,id,deleted_at,NULL', 'max:255'],
-                'password_staff' => ['required', 'string', 'max:255'],
+                'password_staff' => ['required', 'string', 'max:255', 'min:8'],
 
             ]);
 
@@ -71,7 +71,7 @@ class staffController extends Controller
             $restaurant = new Restorant;
             $restaurant->name = strip_tags($request->name);
             $restaurant->user_id = $staff->id;
-            $restaurant->description = strip_tags($request->description.'');
+            $restaurant->description = strip_tags($request->description . '');
             $restaurant->minimum = $request->minimum | 0;
             $restaurant->lat = 0;
             $restaurant->lng = 0;
@@ -97,7 +97,7 @@ class staffController extends Controller
             ->where('id', $id)  // find your user by their email
             ->limit(1)  // optional - to ensure only one record is updated.
             ->update(array('deleted_at' => date('Y-m-d H:i:s')));
-        
+
         return redirect('/staff')->with('status', 'Staff removed successfully');
     }
 
@@ -105,20 +105,29 @@ class staffController extends Controller
     {
         if (auth()->user()->hasRole('owner')) {
             $user_data = User::find($id);
-            return view('staff.edit', ['user_data' => $user_data]);
+            $restorant = Restorant::select('name')->where('user_id', $id)->first();;
+            // dd($restorant);
+            return view('staff.edit', ['user_data' => $user_data, 'restorant' => $restorant]);
         }
     }
 
     public function change(Request $request)
     {
+
+        $request->validate([
+            'name_staff' => ['required', 'string', 'unique:companies,name', 'max:255'],
+            'password_staff' => ['required', 'string', 'max:255', 'min:8'],
+
+        ]);
+
         if (auth()->user()->hasRole('owner')) {
             $staff = User::find($request->id);
-
             $staff->name = strip_tags($request->name_staff);
             $staff->api_token = Str::random(80);
             $staff->password = Hash::make($request->password_staff);
-            $staff->restaurant_id = Auth::user()->restaurant->id;
             $staff->save();
+
+            $restaurant = Restorant::where('user_id', $request->id)->limit(1)->update(array('name' => $request->branch_name));
 
             return redirect('/staff')->with('status', 'You have successfully updated a staff');
         }

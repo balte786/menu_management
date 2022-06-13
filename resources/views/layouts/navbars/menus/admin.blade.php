@@ -36,7 +36,7 @@
     -->
     <li class="nav-item">
         <a class="nav-link" href="{{ route('admin.restaurants.index') }}">
-            <i class="ni ni-shop text-info"></i> {{ __('Restaurants') }}
+            <i class="ni ni-shop text-info"></i> {{ __('Brands') }}
         </a>
     </li>
     <!--
