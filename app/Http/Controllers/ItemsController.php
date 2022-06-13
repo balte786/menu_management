@@ -192,7 +192,7 @@ class ItemsController extends Controller
     public function edit(Items $item)
     {
         //if item belongs to owner restorant menu return view
-        if (auth()->user()->hasRole('owner') && $item->category->restorant->id == auth()->user()->restorant->id || auth()->user()->hasRole('admin')) {
+        if (auth()->user()->hasRole('owner') &&   $item->category->restorant->id == auth()->user()->restorant->id || auth()->user()->hasRole('admin') || auth()->user()->hasRole('staff')) {
 
             $extraViews = [];
             foreach (Module::all() as $key => $module) {

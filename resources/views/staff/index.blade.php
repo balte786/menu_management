@@ -14,10 +14,10 @@
                 <div class="card-header border-0">
                     <div class="row align-items-center">
                         <div class="col-8">
-                            <h3 class="mb-0">Brands</h3>
+                            <h3 class="mb-0">Restaurants</h3>
                         </div>
                         <div class="col-4 text-right">
-                            <a href="{{ URL::to('/addStaff') }}" class="btn btn-sm btn-primary">{{ __('Add Brand') }}</a>
+                            <a href="{{ URL::to('/addStaff') }}" class="btn btn-sm btn-primary">{{ __('Add Restaurant') }}</a>
 
                         </div>
 
@@ -59,7 +59,7 @@
                                 <td>{{ $staff->created_at->format('m/d/y h:m:A') }}</td>
                                 <td>{{ $staff->	updated_at->format('m/d/y h:m:A') }}</td>
                                 <td><a href="{{URL::to('/delete-staff/'.$staff->id)}}"><button type="button" class="btn btn-danger btn-sm">Delete</button></a>|
-                                <a href="{{URL::to('/edit-staff/'.$staff->id)}}"><button type="button" class="btn btn-danger btn-sm">Edit</button></a>|
+                                    <a href="{{URL::to('/edit-staff/'.$staff->id)}}"><button type="button" class="btn btn-danger btn-sm">Edit</button></a>|
                                     <a href="{{URL::to('/login-branch/'.$staff->id)}}"><button type="button" class="btn btn-primary btn-sm">Login this branch</button></a>
                                 </td>
 

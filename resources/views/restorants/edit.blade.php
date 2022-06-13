@@ -8,7 +8,11 @@
             <ul class="nav nav-pills nav-fill flex-column flex-md-row" id="res_menagment" role="tablist">
 
                 <li class="nav-item">
+                    @if(auth()->user()->hasRole('staff'))
                     <a class="nav-link mb-sm-3 mb-md-0 active " id="tabs-menagment-main" data-toggle="tab" href="#menagment" role="tab" aria-controls="tabs-menagment" aria-selected="true"><i class="ni ni-badge mr-2"></i>{{ __('Restaurant Management')}}</a>
+                    @else
+                    <a class="nav-link mb-sm-3 mb-md-0 active " id="tabs-menagment-main" data-toggle="tab" href="#menagment" role="tab" aria-controls="tabs-menagment" aria-selected="true"><i class="ni ni-badge mr-2"></i>{{ __('Brand Management')}}</a>
+                    @endif
                 </li>
 
                 @if(count($appFields)>0)
@@ -57,19 +61,23 @@
                         <div class="card-header bg-white border-0">
                             <div class="row align-items-center">
                                 <div class="col-8">
+                                    @if(auth()->user()->hasRole('staff'))
                                     <h3 class="mb-0">{{ __('Restaurant Management') }}</h3>
-                                    @if (config('settings.wildcard_domain_ready'))
-                                    <span class="blockquote-footer">{{ $restorant->getLinkAttribute() }}</span>
+                                    @else
+                                    <h3 class="mb-0">{{ __('Brand Management') }}</h3>
                                     @endif
+                                    <!-- @if (config('settings.wildcard_domain_ready'))
+                                    <span class="blockquote-footer">{{ $restorant->getLinkAttribute() }}</span>
+                                    @endif -->
                                 </div>
                                 <div class="col-4 text-right">
                                     @if(auth()->user()->hasRole('admin'))
                                     <a href="{{ route('admin.restaurants.index') }}" class="btn btn-sm btn-info">{{ __('Back to list') }}</a>
                                     @endif
-                                    @if (!config('settings.is_pos_cloud_mode'))
+                                    <!-- @if (!config('settings.is_pos_cloud_mode'))
                                     @if (config('settings.wildcard_domain_ready'))
                                     <a target="_blank" href="{{ $restorant->getLinkAttribute() }}" class="btn btn-sm btn-success">{{ __('View it') }}</a>
-                                    @else
+                                    @else -->
                                     <a target="_blank" href="{{ route('vendor',$restorant->subdomain) }}" class="btn btn-sm btn-success">{{ __('Menu Preview') }}</a>
                                     <a target="_blank" href="{{URL::to('/generate-xml/'.$restorant->subdomain)}}" class="btn btn-sm btn-primary">Export XML</a>
                                     @endif
@@ -84,9 +92,14 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <h6 class="heading-small text-muted mb-4">{{ __('Restaurant information') }}</h6>
 
+                            @if(auth()->user()->hasRole('staff'))
+                            <h6 class="heading-small text-muted mb-4">{{ __('Restaurant information') }}</h6>
+                            @include('restorants.partials.staff-info')
+                            @else
+                            <h6 class="heading-small text-muted mb-4">{{ __('Brand information') }}</h6>
                             @include('restorants.partials.info')
+                            @endif
                             <hr />
                             @include('restorants.partials.owner')
                         </div>

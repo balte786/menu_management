@@ -58,16 +58,42 @@ class RestorantController extends Controller
      */
     public function index(Restorant $restaurants)
     {
+        $owner_user_array = User::where('owner_id', 0)->get()->pluck('id')->toArray();
+
         if (auth()->user()->hasRole('admin')) {
             if (request('term')) {
                 $restaurants = Restorant::query();
                 $restaurants->where('name', 'Like', '%' . request('term') . '%');
             }
-            return view('restorants.index', ['restorants' => $restaurants->orderBy('id', 'desc')->paginate(10)]);
+            return view('restorants.index', ['restorants' => $restaurants->whereIn('user_id', $owner_user_array)->orderBy('id', 'desc')->paginate(5)]);
         } else {
             return redirect()->route('orders.index')->withStatus(__('No Access'));
         }
     }
+    // public function index(Restorant $restaurants, Request $request)
+    // {
+    //     // $products = Product::whereHas('categories', function ($query) use ($request) {
+    //     //     $query->where('slug', $request->category);
+    //     // })->paginate(9);
+
+    //     if (auth()->user()->hasRole('admin')) {
+
+    //         if (!empty($request)) {
+    //             $restaurants = User::where('owner_id', 0)->where('restaurant_id', '!=', null)->whereHas('restaurants', function ($query) use ($request) {
+    //                 $query->where('name', $request->term);
+    //             })->orderBy('id', 'desc')->paginate(9);
+    //         }
+    //         // dd($request->term);
+    //         // dd($restaurants);
+
+
+    //         // dd($pag);
+    //         return view('restorants.index', ['restorants' => $restaurants]);
+    //     } else {
+    //         return redirect()->route('orders.index')->withStatus(__('No Access'));
+    //     }
+    // }
+
 
     public function loginas(Restorant $restaurant)
     {
